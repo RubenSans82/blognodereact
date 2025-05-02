@@ -1,0 +1,250 @@
+#root {
+  max-width: 960px; /* Adjusted max-width */
+  margin: 0 auto;
+  padding: 0 2rem 2rem; /* Remove top padding, keep side/bottom */
+  text-align: center;
+}
+
+/* Remove default Vite logo styles if not needed */
+/* .logo { ... } */
+/* .logo.react { ... } */
+
+/* Layout */
+main {
+  padding: 1rem 0; /* Reduced padding */
+}
+
+/* Navbar Styling */
+nav {
+  background-color: var(--surface-color); /* Use surface color */
+  padding: 0.8rem 0; /* Adjusted padding */
+  margin-bottom: 2.5rem; /* Increased margin */
+  border-radius: 0; /* Full width bar */
+  border-bottom: 1px solid var(--border-color); /* Use generic border color */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+nav ul {
+  list-style: none;
+  padding: 0 1rem; /* Add horizontal padding */
+  margin: 0 auto; /* Center content */
+  max-width: 960px; /* Match #root max-width */
+  display: flex;
+  justify-content: space-between; /* Space out left and right groups */
+  align-items: center;
+  /* Remove gap here, apply within groups */
+}
+
+/* Add styles for the logo */
+nav .logo {
+  height: 2.5em; /* Adjust size as needed */
+  padding: 0; /* Remove padding if inherited */
+  will-change: filter; /* Optimization hint for filter */
+  transition: filter 300ms;
+  vertical-align: middle; /* Align better with text links */
+}
+nav .logo:hover {
+   filter: drop-shadow(0 0 0.75em var(--primary-hover-color)); /* Glow effect on hover */
+}
+
+/* Group links */
+nav ul .nav-left,
+nav ul .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* Adjust gap between items within each group */
+    padding: 0; /* Reset padding */
+    margin: 0; /* Reset margin */
+}
+
+/* Remove default li styles from nav AND reset animation styles */
+nav ul li {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  /* --- Reset styles potentially inherited from global li --- */
+  opacity: 1; /* Ensure visible */
+  transform: none; /* Ensure original position */
+  transition: none; /* Remove animation transition if inherited */
+}
+nav ul li:hover { /* Remove hover effect from li itself */
+    transform: none;
+    box-shadow: none;
+}
+
+/* General Nav Link Styles (No Neon) */
+nav ul li a,
+nav ul li button {
+  color: var(--text-color); /* Use standard text color */
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  /* text-shadow: 0 0 3px var(--primary-color); REMOVED */
+}
+
+nav ul li a:hover,
+nav ul li button:hover {
+  color: var(--primary-hover-color); /* Use primary hover color */
+  background-color: color-mix(in srgb, var(--surface-color) 85%, var(--primary-color) 5%); /* Very subtle background */
+  text-decoration: none;
+  /* text-shadow: 0 0 6px var(--secondary-color); REMOVED */
+}
+
+/* Specific Neon Style for Navbar Logo */
+.navbar-logo {
+  color: var(--primary-color); /* Neon color */
+  text-decoration: none;
+  font-weight: bold; /* Make it bolder */
+  font-size: 1.5em; /* Make it larger */
+  padding: 0.5rem 0; /* Adjust padding */
+  transition: color 0.2s ease-in-out, text-shadow 0.2s ease;
+  text-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color); /* Apply neon glow */
+}
+
+.navbar-logo:hover {
+  color: var(--secondary-color); /* Brighter neon color on hover */
+  text-shadow: 0 0 8px var(--secondary-color), 0 0 15px var(--secondary-color); /* Intensify glow */
+}
+
+/* Ensure button reset styles are still applied */
+nav ul li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  font-family: inherit;
+  /* Inherit color, padding, etc. from the general rule above */
+}
+
+nav ul li button:hover {
+  transform: none; /* Override button hover transform if any */
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apply the spin animation to the logo inside the nav */
+@media (prefers-reduced-motion: no-preference) {
+  nav .logo { /* Target the logo directly */
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* Style links and buttons */
+.nav-links {
+  color: var(--text-color); /* Use text color variable */
+  text-decoration: none;
+  padding: 0.5rem 0; /* Adjust vertical padding */
+  transition: color 0.3s ease;
+}
+
+.nav-links:hover {
+  color: var(--primary-hover-color); /* Use primary hover color */
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit; /* Match link font size */
+}
+
+.username {
+  font-style: italic;
+  color: var(--secondary-text-color); /* Use secondary text color */
+}
+
+/* Remove unused styles */
+/* .card { ... } */
+/* .read-the-docs { ... } */
+
+.navbar-container {
+  /* Cambiar a posición fija */
+  position: fixed;
+  top: 0; /* Fijar en la parte superior */
+  width: 80%; /* Ajustar el ancho */
+  left: 50%; /* Centrar horizontalmente */
+  transform: translateX(-50%); /* Centrar el contenedor */
+
+  z-index: 1000; /* Asegurar que esté encima */
+
+  /* Mantener estilos de fondo */
+  background-image: url('/banner.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Quitar estilos de centrado del contenedor */
+   margin: 0 auto 2.5rem auto; 
+  /* border-radius: 8px; */
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); */
+
+  /* Ajustar padding si es necesario */
+  padding: 10px 0; /* Padding vertical, horizontal se maneja en ul */
+}
+
+/* Asegúrate de que los elementos dentro del navbar sean visibles sobre el fondo */
+.navbar-container ul {
+  list-style: none;
+  /* Añadir centrado al contenido interno (ul) */
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px; /* Padding horizontal para los elementos internos */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-container .nav-links,
+.navbar-container .username,
+.navbar-container .nav-button { /* Apply base style to button too */
+  color: white;
+  text-shadow: 1px 1px 2px black;
+  text-decoration: none;
+  padding: 0.5rem 0.8rem; /* Consistent padding */
+  border-radius: 4px;
+  transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out; /* Added text-shadow transition */
+  background: none; /* Ensure no background by default for links/username */
+  border: none; /* Ensure no border by default for links/username */
+  font-style: normal; /* Ensure normal style by default */
+  /* Aumentar tamaño de fuente */
+  font-size: 1.3em; /* Ajustar este valor si es necesario */
+}
+
+.navbar-container .username {
+  font-style: italic; /* Keep username italic */
+  /* Remove specific color/shadow if defined elsewhere, inherit from above */
+}
+
+.navbar-container .nav-button {
+  background-color: rgba(0, 0, 0, 0.5); /* Keep button background */
+  border: 1px solid white; /* Keep button border */
+  cursor: pointer;
+  font-size: 1.3em; /* Match link font size */
+  font-family: inherit;
+}
+
+/* Hover effect for links and buttons */
+.navbar-container .nav-links:hover,
+.navbar-container .nav-button:hover {
+  color: white; /* Keep color white */
+  text-shadow: 1px 1px 2px black; /* Keep text shadow */
+  background-color: rgba(255, 255, 255, 0.1); /* Optional: Subtle background highlight on hover */
+}
+
+/* Remove specific hover styles inherited from general nav rules if necessary */
+nav ul li a:hover,
+nav ul li button:hover {
+  /* Styles here might conflict, ensure .navbar-container rules take precedence */
+  /* Or remove these general rules if .navbar-container is always used */
+}

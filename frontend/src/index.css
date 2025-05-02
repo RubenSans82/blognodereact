@@ -1,0 +1,333 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root {
+  /* Cambiar la fuente principal a VT323 */
+  font-family: 'VT323', monospace;
+  line-height: 1.6;
+  font-weight: 400;
+
+  /* 80s Neon Color Palette */
+  --background-color: #0d0221; /* Deep dark blue/purple */
+  --surface-color: #261447;    /* Slightly lighter dark purple */
+  --text-color: #f0f0f0;       /* Off-white */
+  --text-muted: #a0a0a0;      /* Lighter grey */
+  --primary-color: #00f6ff;    /* Neon Cyan */
+  --primary-hover-color: #ff00ff; /* Neon Magenta */
+  --border-color: #ff00ff;     /* Neon Magenta for borders */
+
+  color-scheme: light dark;
+  color: var(--text-color);
+  background-color: var(--background-color);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Basic Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  font-weight: 500;
+  color: var(--primary-color); /* Use neon cyan for links */
+  text-decoration: inherit;
+  text-shadow: 0 0 3px var(--primary-color); /* Subtle neon glow */
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+a:hover {
+  color: var(--primary-hover-color); /* Use neon magenta for hover */
+  text-shadow: 0 0 6px var(--primary-hover-color); /* Stronger glow on hover */
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  /* Añadir estilos de fondo */
+  background-image: url('/fondo.png'); /* Ruta desde la carpeta public */
+  background-size: cover; /* Cubrir todo el fondo */
+  background-position: center; /* Centrar la imagen */
+  background-repeat: no-repeat; /* No repetir la imagen */
+  background-attachment: fixed; /* Fijar el fondo al hacer scroll */
+}
+
+h1 {
+  font-size: 2.5em; /* Ajustar tamaño si Press Start 2P es muy grande */
+  line-height: 1.2;
+  color: var(--primary-hover-color);
+  text-shadow: 0 0 8px var(--primary-hover-color);
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+h2 {
+   font-size: 1.5em;
+   font-weight: 600;
+   margin-bottom: 0.75rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /* Usar Press Start 2P para los encabezados */
+  font-family: 'Press Start 2P', cursive;
+}
+
+button {
+  border-radius: 6px; /* Slightly less rounded */
+  border: 1px solid var(--primary-color); /* Use primary color for border */
+  padding: 0.7em 1.4em; /* Slightly larger padding */
+  font-size: 1em;
+  font-weight: 500;
+  font-family: 'VT323', monospace; /* Asegurar que usen la fuente base */
+  background-color: var(--primary-color); /* Solid background */
+  color: var(--button-text-color); /* Use specific button text color */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease, border-color 0.2s ease-in-out; /* Added transform */
+}
+button:hover {
+  background-color: var(--primary-hover-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 0 8px var(--primary-color); /* Neon glow on hover */
+}
+button:active { /* Added active state */
+  background-color: var(--primary-active-color);
+  border-color: var(--primary-active-color);
+  transform: translateY(0px); /* Return to original position */
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+  outline-color: var(--primary-hover-color); /* Magenta focus outline */
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--border-color); /* Darker disabled background */
+  border-color: var(--border-color);
+  color: var(--text-muted);
+  transform: none; /* No hover effect when disabled */
+}
+
+#root {
+  max-width: 960px; /* Restaurar ancho máximo anterior */
+  margin: 2rem auto; /* Centrar y añadir margen vertical */
+  /* Añadir padding-top para dejar espacio para el navbar fijo */
+  /* Ajusta este valor según la altura real de tu navbar */
+  padding: 80px 2rem 2rem 2rem; /* Añadido 80px de padding superior */
+  text-align: left; /* Mantener alineación izquierda */
+  width: 100%; /* Asegurar que use el max-width */
+  /* Ejemplo: añadir un fondo semi-transparente si el fondo global dificulta la lectura */
+  /* background-color: rgba(var(--surface-color-rgb, 38, 20, 71), 0.9); */
+  /* border-radius: 8px; */
+}
+
+/* General Form Styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; /* Increased gap */
+  max-width: 450px; /* Slightly wider form */
+  margin: 2rem auto;
+  padding: 2.5rem; /* More padding */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--surface-color); /* Use surface color */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Adjusted shadow */
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+form label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-family: 'VT323', monospace; /* Asegurar que usen la fuente base */
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+  padding: 0.9em; /* More padding */
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 1em;
+  font-family: 'VT323', monospace; /* Asegurar que usen la fuente base */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border-color: var(--primary-color); /* Highlight border on focus */
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 30%, transparent); /* Use color-mix for glow */
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Error/Success Messages */
+p[style*="color: red"] {
+  color: #ff7b7b !important; /* Adjusted red for dark bg */
+  font-weight: bold;
+  text-align: center; /* Center error messages */
+  margin-top: -0.5rem; /* Adjust spacing */
+  margin-bottom: 0.5rem;
+}
+p[style*="color: green"] {
+  color: #7bff7b !important; /* Adjusted green for dark bg */
+  font-weight: bold;
+  text-align: center; /* Center success messages */
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Post List Styling - Card like */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  display: grid; /* Use grid for layout */
+  gap: 1.5rem; /* Gap between cards */
+  /* Responsive grid columns */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  perspective: 1000px; /* Add perspective for 3D hover effect */
+}
+
+li {
+  /* Usar rgba para el color de fondo con transparencia */
+  background-color: rgba(38, 20, 71, 0.85); /* 85% opacidad del color --surface-color (#261447) */
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  margin-bottom: 0;
+  border-radius: 8px;
+  text-align: left;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out, box-shadow 0.3s ease-in-out, outline-color 0.3s ease-in-out;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+
+  /* --- JS IntersectionObserver Animation Styles --- */
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+li.visible { /* Class added by IntersectionObserver */
+  opacity: 1; /* Fade in */
+  transform: translateY(0); /* Move to original position */
+}
+
+/* Update the hover rule for the new animation */
+li:hover {
+  /* Remove previous transform and static outline/shadow */
+  /* transform: scale(1.02) rotateY(10deg) rotateX(5deg); */
+  /* outline: 2px solid var(--primary-hover-color); */
+  /* outline-offset: 4px; */
+  /* box-shadow: 0 15px 35px rgba(var(--primary-color-rgb), 0.5); */
+
+  /* Apply the new border/glow animation */
+  animation: neon-border-pulse 1s infinite alternate ease-in-out;
+}
+
+li h2 {
+  /* Usar Press Start 2P para los encabezados */
+  font-family: 'Press Start 2P', cursive;
+  /* Reducir tamaño de fuente para h2 dentro de li */
+  font-size: 1.1em; /* Ajustar según sea necesario */
+  margin-bottom: 0.5rem;
+}
+
+li p {
+  /* Reducir tamaño de fuente para p dentro de li */
+  font-size: 0.85em; /* Ajustar según sea necesario */
+  color: var(--text-muted); /* Use muted text color */
+}
+
+li h2 {
+  margin-bottom: 0.5rem;
+}
+
+li p {
+  font-size: 1em;
+  color: var(--text-muted); /* Use muted text color */
+}
+
+/* Individual Post Styling */
+.post-content-wrapper { /* Add a wrapper class in PostPage.jsx if needed */
+   background-color: var(--surface-color);
+   padding: 2rem;
+   border-radius: 8px;
+   border: 1px solid var(--border-color);
+   margin-top: 2rem;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.post-content-wrapper h1 {
+   text-align: left; /* Align post title left */
+   margin-bottom: 0.5rem;
+}
+.post-content-wrapper p:first-of-type { /* Style the author/date line */
+   color: var(--text-muted);
+   font-size: 1em;
+   margin-bottom: 1.5rem;
+}
+
+div[style*="white-space: pre-wrap"] {
+  text-align: left;
+  margin-top: 0; /* Remove margin as wrapper handles it */
+  line-height: 1.7; /* Increase body line-height */
+  background-color: transparent; /* Remove inner background */
+  padding: 0; /* Remove inner padding */
+  border-radius: 0;
+  border: none; /* Remove inner border */
+  color: var(--text-color);
+}
+
+/* Define the keyframes for the animation */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Optional: Keyframes for fade-out (if desired later) */
+/* @keyframes fade-out-down {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px); /* Move up slightly on exit 
+  }
+} */
+
+/* Define the keyframes for the new animation */
+@keyframes neon-border-pulse {
+  0%, 100% {
+    outline-color: var(--primary-hover-color); /* Intense Pink */
+    box-shadow: 0 0 12px var(--primary-hover-color); /* Pink Glow */
+  }
+  50% {
+    outline-color: var(--primary-color); /* Neon Cyan */
+    box-shadow: 0 0 12px var(--primary-color); /* Cyan Glow */
+  }
+}
