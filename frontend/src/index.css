@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 :root {
   /* Cambiar la fuente principal a VT323 */
-  font-family: 'VT323', monospace;
+  font-family: 'Share Tech Mono', monospace;
   line-height: 1.6;
   font-weight: 400;
 
@@ -47,7 +48,9 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  /* Cambiar place-items a start para alinear arriba */
+  place-items: start; /* Alinear contenido al inicio (arriba) */
+  justify-content: center; /* Mantener centrado horizontal */
   min-width: 320px;
   min-height: 100vh;
   /* Añadir estilos de fondo */
@@ -56,6 +59,12 @@ body {
   background-position: center; /* Centrar la imagen */
   background-repeat: no-repeat; /* No repetir la imagen */
   background-attachment: fixed; /* Fijar el fondo al hacer scroll */
+}
+
+.share-tech-mono-regular {
+  font-family: "Share Tech Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
 }
 
 h1 {
@@ -75,7 +84,7 @@ h2 {
 
 h1, h2, h3, h4, h5, h6 {
   /* Usar Press Start 2P para los encabezados */
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Share Tech Mono', cursive;
 }
 
 button {
@@ -84,7 +93,7 @@ button {
   padding: 0.7em 1.4em; /* Slightly larger padding */
   font-size: 1em;
   font-weight: 500;
-  font-family: 'VT323', monospace; /* Asegurar que usen la fuente base */
+  font-family: "Share Tech Mono", monospace; /* Asegurar que usen la fuente base */
   background-color: var(--primary-color); /* Solid background */
   color: var(--button-text-color); /* Use specific button text color */
   cursor: pointer;
@@ -115,9 +124,56 @@ button:disabled {
   transform: none; /* No hover effect when disabled */
 }
 
+/* Base styles for action buttons/links in post list */
+.button-edit,
+.button-delete {
+  /* Inherit general button styles or define them here */
+  display: inline-block; /* Important for Link to behave like button */
+  border-radius: 6px;
+  padding: 0.5em 1em; /* Adjust padding as needed */
+  font-size: 0.9em; /* Adjust font size as needed */
+  font-weight: 500;
+  font-family: 'VT323', monospace;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none; /* Remove underline from link */
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* Specific styles for Edit button/link */
+.button-edit {
+  border: 1px solid var(--primary-color); /* Cyan border */
+  background-color: var(--primary-color); /* Cyan background */
+  color: var(--background-color); /* Dark text */
+}
+
+.button-edit:hover {
+  background-color: var(--primary-hover-color); /* Magenta background on hover */
+  border-color: var(--primary-hover-color); /* Magenta border on hover */
+  color: var(--text-color); /* Light text on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px var(--primary-hover-color);
+}
+
+/* Specific styles for Delete button */
+.button-delete {
+  border: 1px solid #ff7b7b; /* Red border */
+  background-color: #ff7b7b; /* Red background */
+  color: var(--background-color); /* Dark text */
+}
+
+.button-delete:hover {
+  background-color: #ff4d4d; /* Darker red background on hover */
+  border-color: #ff4d4d; /* Darker red border on hover */
+  color: var(--text-color); /* Light text on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px #ff4d4d;
+}
+
 #root {
   max-width: 960px; /* Restaurar ancho máximo anterior */
-  margin: 2rem auto; /* Centrar y añadir margen vertical */
+  /* Ajustar margen para que no dependa del centrado flex del body */
+  margin: 0 auto; /* Centrado horizontal, sin margen vertical automático */
   /* Añadir padding-top para dejar espacio para el navbar fijo */
   /* Ajusta este valor según la altura real de tu navbar */
   padding: 80px 2rem 2rem 2rem; /* Añadido 80px de padding superior */
@@ -151,7 +207,7 @@ form div {
 form label {
   margin-bottom: 0.5rem;
   font-weight: bold;
-  font-family: 'VT323', monospace; /* Asegurar que usen la fuente base */
+  font-family: "Share Tech Mono", monospace; /* Asegurar que usen la fuente base */
 }
 
 input[type="text"],
@@ -163,7 +219,7 @@ textarea {
   background-color: var(--input-bg);
   color: var(--text-color);
   font-size: 1em;
-  font-family: 'VT323', monospace; /* Asegurar que usen la fuente base */
+  font-family: "Share Tech Mono", monospace; /* Asegurar que usen la fuente base */
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 input[type="text"]:focus,
@@ -244,7 +300,7 @@ li:hover {
 
 li h2 {
   /* Usar Press Start 2P para los encabezados */
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Share Tech Mono', cursive;
   /* Reducir tamaño de fuente para h2 dentro de li */
   font-size: 1.1em; /* Ajustar según sea necesario */
   margin-bottom: 0.5rem;

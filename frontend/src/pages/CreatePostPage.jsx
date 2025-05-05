@@ -70,9 +70,11 @@ function CreatePostPage() {
      return <p>Necesitas iniciar sesión para crear un post. Redirigiendo...</p>;
   }
 
+  // Usar Fragment <> en lugar de div y quitar estilos inline
   return (
-    <div>
-      <h1>Crear Nuevo Post</h1>
+    <>
+      {/* Volver a añadir margen inferior al h1 */}
+      <h1 style={{ marginBottom: '1.5rem' }}>Crear Nuevo Post</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">Título:</label>
@@ -83,6 +85,7 @@ function CreatePostPage() {
             onChange={(e) => setTitle(e.target.value)}
             required
             disabled={loading}
+            // Quitar style inline
           />
         </div>
         <div>
@@ -94,14 +97,15 @@ function CreatePostPage() {
             required
             rows="10"
             disabled={loading}
+             // Quitar style inline
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" disabled={loading}>
+        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Mantener estilo de error por ahora */}
+        <button type="submit" disabled={loading}> {/* Quitar style inline */}
           {loading ? 'Publicando...' : 'Publicar Post'}
         </button>
       </form>
-    </div>
+    </>
   );
 }
 

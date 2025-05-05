@@ -12,6 +12,14 @@
 /* Layout */
 main {
   padding: 1rem 0; /* Reduced padding */
+  text-align: left; /* Ensure content alignment starts left */
+  max-width: 600px; /* Or your desired max width */
+  /* Adjust top margin for more space below navbar */
+  margin: 4rem auto 2rem auto; /* Increased top margin */
+  padding: 0 1rem; /* Padding inside the main container */
+  text-align: left; /* Ensure text aligns left by default */
+  width: 100%; /* Ensure it takes up available space for margin:auto to work */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 /* Navbar Styling */
@@ -247,4 +255,272 @@ nav ul li a:hover,
 nav ul li button:hover {
   /* Styles here might conflict, ensure .navbar-container rules take precedence */
   /* Or remove these general rules if .navbar-container is always used */
+}
+
+/* Overlay para la animación de logout */
+.logout-overlay {
+  position: fixed;
+  inset: 0; /* Equivalente a top: 0; right: 0; bottom: 0; left: 0; */
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Muy alto para estar encima de todo */
+  opacity: 0; /* Empieza invisible */
+  pointer-events: none; /* No interfiere con clics */
+  transition: opacity 0.7s ease-in; /* Transición suave para aparecer */
+}
+
+.logout-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Línea blanca animada */
+.tv-line {
+  width: 100%;
+  height: 4px; /* Grosor inicial de la línea */
+  background-color: white;
+  opacity: 0; /* Empieza invisible hasta que el overlay esté activo */
+}
+
+.logout-overlay.active .tv-line {
+  opacity: 1;
+  animation: tv-shutdown-enhanced 2s linear forwards; /* Duración y nombre de la animación */
+  animation-delay: 0.7s; /* Espera a que el fondo negro aparezca */
+}
+
+/* Keyframes para la animación de apagado */
+@keyframes tv-shutdown-enhanced {
+  0% {
+    width: 100%;
+    height: 1px;
+    opacity: 0.25; /* Línea invisible al principio */
+    box-shadow: none;
+  }
+  5% {
+    width: 100%;
+    height: 2px;
+    opacity: 0.5; /* Fade-in rápido de la línea */
+    box-shadow: none;
+  }
+  10% {
+    width: 100%;
+    height: 3px;
+    opacity: 0.7;
+  }
+  15% {
+    width: 100%;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 23px 3px #fff, 0 0 46px 10px #fff;
+  }
+  20% {
+    width: 100%;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 27px 7px #fff, 0 0 54px 18px #fff;
+  }
+  25% {
+    width: 100%;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 30px 10px #fff, 0 0 60px 20px #fff;
+  }
+  30% {
+    width: 100%;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 32px 12px #fff, 0 0 64px 24px #fff;
+  }
+  35% {
+    width: 100%;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 32px 12px #fff, 0 0 64px 24px #fff;
+  }
+  40% {
+    width: 100%;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 30px 10px #fff, 0 0 60px 20px #fff;
+  }
+  45% {
+    width: 100%;
+    height: 4px;
+    opacity: 1;
+    box-shadow: 0 0 27px 7px #fff, 0 0 54px 18px #fff;
+  }
+  50% {
+    width: 100%;
+    height: 3px;
+    opacity: 1;
+    box-shadow: 0 0 23px 3px #fff, 0 0 46px 10px #fff;
+  }
+
+  60% {
+    width: 100%;
+    height: 2px;
+    opacity: 1;
+    box-shadow: none;
+  }
+  70% {
+    width: 100%;
+    height: 1px;
+    opacity: 1;
+    box-shadow: none;
+  }
+  85% {
+    width: 4px;
+    height: 1px;
+    opacity: 1;
+    box-shadow: none;
+  }
+  95% {
+    width: 4px;
+    height: 1px;
+    opacity: 1;
+    box-shadow: none;
+  }
+  100% {
+    width: 4px;
+    height: 0px;
+    opacity: 0;
+    box-shadow: none;
+  }
+}
+
+/* Overlay de distorsión tipo glitch */
+.glitch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: transparent;
+  opacity: 0.5; /* Opacidad fija al 50% */
+  /* transition: opacity 0.5s linear; REMOVED */
+}
+
+/* REMOVED glitch-fade class and glitch-fadeout-infinite animation */
+/* .glitch-overlay.glitch-fade { ... } */
+/* @keyframes glitch-fadeout-infinite { ... } */
+
+.glitch-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 0.3%; /* Más finas todavía */
+  background: linear-gradient(90deg, #fff 0%, #00fff7 30%, #ff00ff 70%, #fff 100%);
+  opacity: 0.18;
+  mix-blend-mode: lighten;
+  animation: glitch-move 0.125s infinite linear; /* El doble de rápido */
+  filter: saturate(2.5) contrast(1.5) brightness(1.2) grayscale(0.3);
+}
+
+/* Más líneas y delays variados para 64 líneas */
+.glitch-line:nth-child(2n) { opacity: 0.22; animation-delay: 0.0125s; }
+.glitch-line:nth-child(3n) { opacity: 0.28; animation-delay: 0.025s; }
+.glitch-line:nth-child(4n) { opacity: 0.15; animation-delay: 0.0375s; }
+.glitch-line:nth-child(5n) { opacity: 0.25; animation-delay: 0.05s; }
+.glitch-line:nth-child(6n) { opacity: 0.32; animation-delay: 0.0625s; }
+.glitch-line:nth-child(7n) { opacity: 0.16; animation-delay: 0.075s; }
+.glitch-line:nth-child(8n) { opacity: 0.19; animation-delay: 0.0875s; }
+.glitch-line:nth-child(9n) { opacity: 0.21; animation-delay: 0.1s; }
+.glitch-line:nth-child(10n) { opacity: 0.17; animation-delay: 0.1125s; }
+.glitch-line:nth-child(11n) { opacity: 0.23; animation-delay: 0.125s; }
+.glitch-line:nth-child(12n) { opacity: 0.14; animation-delay: 0.1375s; }
+.glitch-line:nth-child(13n) { opacity: 0.18; animation-delay: 0.15s; }
+.glitch-line:nth-child(14n) { opacity: 0.20; animation-delay: 0.1625s; }
+.glitch-line:nth-child(15n) { opacity: 0.16; animation-delay: 0.175s; }
+.glitch-line:nth-child(16n) { opacity: 0.19; animation-delay: 0.1875s; }
+.glitch-line:nth-child(17n) { opacity: 0.22; animation-delay: 0.2s; }
+.glitch-line:nth-child(18n) { opacity: 0.24; animation-delay: 0.2125s; }
+.glitch-line:nth-child(19n) { opacity: 0.15; animation-delay: 0.225s; }
+.glitch-line:nth-child(20n) { opacity: 0.27; animation-delay: 0.2375s; }
+.glitch-line:nth-child(21n) { opacity: 0.29; animation-delay: 0.25s; }
+.glitch-line:nth-child(22n) { opacity: 0.13; animation-delay: 0.2625s; }
+.glitch-line:nth-child(23n) { opacity: 0.22; animation-delay: 0.275s; }
+.glitch-line:nth-child(24n) { opacity: 0.26; animation-delay: 0.2875s; }
+.glitch-line:nth-child(25n) { opacity: 0.14; animation-delay: 0.3s; }
+.glitch-line:nth-child(26n) { opacity: 0.21; animation-delay: 0.3125s; }
+.glitch-line:nth-child(27n) { opacity: 0.24; animation-delay: 0.325s; }
+.glitch-line:nth-child(28n) { opacity: 0.19; animation-delay: 0.3375s; }
+.glitch-line:nth-child(29n) { opacity: 0.23; animation-delay: 0.35s; }
+.glitch-line:nth-child(30n) { opacity: 0.18; animation-delay: 0.3625s; }
+.glitch-line:nth-child(31n) { opacity: 0.20; animation-delay: 0.375s; }
+.glitch-line:nth-child(32n) { opacity: 0.25; animation-delay: 0.3875s; }
+.glitch-line:nth-child(33n) { opacity: 0.22; animation-delay: 0.4s; }
+.glitch-line:nth-child(34n) { opacity: 0.28; animation-delay: 0.4125s; }
+.glitch-line:nth-child(35n) { opacity: 0.16; animation-delay: 0.425s; }
+.glitch-line:nth-child(36n) { opacity: 0.19; animation-delay: 0.4375s; }
+.glitch-line:nth-child(37n) { opacity: 0.21; animation-delay: 0.45s; }
+.glitch-line:nth-child(38n) { opacity: 0.17; animation-delay: 0.4625s; }
+.glitch-line:nth-child(39n) { opacity: 0.24; animation-delay: 0.475s; }
+.glitch-line:nth-child(40n) { opacity: 0.14; animation-delay: 0.4875s; }
+.glitch-line:nth-child(41n) { opacity: 0.22; animation-delay: 0.5s; }
+.glitch-line:nth-child(42n) { opacity: 0.26; animation-delay: 0.5125s; }
+.glitch-line:nth-child(43n) { opacity: 0.15; animation-delay: 0.525s; }
+.glitch-line:nth-child(44n) { opacity: 0.27; animation-delay: 0.5375s; }
+.glitch-line:nth-child(45n) { opacity: 0.29; animation-delay: 0.55s; }
+.glitch-line:nth-child(46n) { opacity: 0.13; animation-delay: 0.5625s; }
+.glitch-line:nth-child(47n) { opacity: 0.22; animation-delay: 0.575s; }
+.glitch-line:nth-child(48n) { opacity: 0.26; animation-delay: 0.5875s; }
+.glitch-line:nth-child(49n) { opacity: 0.14; animation-delay: 0.6s; }
+.glitch-line:nth-child(50n) { opacity: 0.21; animation-delay: 0.6125s; }
+.glitch-line:nth-child(51n) { opacity: 0.24; animation-delay: 0.625s; }
+.glitch-line:nth-child(52n) { opacity: 0.19; animation-delay: 0.6375s; }
+.glitch-line:nth-child(53n) { opacity: 0.23; animation-delay: 0.65s; }
+.glitch-line:nth-child(54n) { opacity: 0.18; animation-delay: 0.6625s; }
+.glitch-line:nth-child(55n) { opacity: 0.20; animation-delay: 0.675s; }
+.glitch-line:nth-child(56n) { opacity: 0.25; animation-delay: 0.6875s; }
+.glitch-line:nth-child(57n) { opacity: 0.22; animation-delay: 0.7s; }
+.glitch-line:nth-child(58n) { opacity: 0.28; animation-delay: 0.7125s; }
+.glitch-line:nth-child(59n) { opacity: 0.16; animation-delay: 0.725s; }
+.glitch-line:nth-child(60n) { opacity: 0.19; animation-delay: 0.7375s; }
+.glitch-line:nth-child(61n) { opacity: 0.21; animation-delay: 0.75s; }
+.glitch-line:nth-child(62n) { opacity: 0.17; animation-delay: 0.7625s; }
+.glitch-line:nth-child(63n) { opacity: 0.24; animation-delay: 0.775s; }
+.glitch-line:nth-child(64n) { opacity: 0.14; animation-delay: 0.7875s; }
+/* ...puedes seguir el patrón hasta 64 líneas... */
+
+@keyframes glitch-move {
+  0%   { transform: translateX(0) scaleY(1); filter: blur(0px) brightness(1); }
+  10%  { transform: translateX(-10px) scaleY(1.1); filter: blur(1px) brightness(1.2); }
+  20%  { transform: translateX(8px) scaleY(0.9); filter: blur(0.5px) brightness(0.8); }
+  30%  { transform: translateX(-5px) scaleY(1.2); filter: blur(1.5px) brightness(1.3); }
+  40%  { transform: translateX(12px) scaleY(0.8); filter: blur(0.5px) brightness(0.7); }
+  50%  { transform: translateX(0) scaleY(1); filter: blur(0px) brightness(1); }
+  60%  { transform: translateX(6px) scaleY(1.1); filter: blur(1px) brightness(1.1); }
+  70%  { transform: translateX(-8px) scaleY(0.95); filter: blur(0.5px) brightness(0.9); }
+  80%  { transform: translateX(10px) scaleY(1.05); filter: blur(1.2px) brightness(1.2); }
+  90%  { transform: translateX(-6px) scaleY(1); filter: blur(0.5px) brightness(1); }
+  100% { transform: translateX(0) scaleY(1); filter: blur(0px) brightness(1); }
+}
+
+/* Glitch global: distorsionar la imagen de fondo y el contenido */
+.glitch-animate-root {
+  animation: glitch-root-move 0.5s linear 0s 1;
+}
+@keyframes glitch-root-move {
+  0% { filter: none; transform: none; }
+  10% { filter: contrast(1.2) brightness(1.1); transform: translateX(-8px); }
+  20% { filter: contrast(0.8) brightness(1.2); transform: translateX(6px); }
+  30% { filter: contrast(1.3) brightness(0.9); transform: translateX(-12px); }
+  40% { filter: contrast(1.1) brightness(1.3); transform: translateX(8px); }
+  50% { filter: none; transform: none; }
+  60% { filter: contrast(1.2) brightness(1.1); transform: translateX(5px); }
+  70% { filter: contrast(0.9) brightness(1.2); transform: translateX(-7px); }
+  80% { filter: contrast(1.3) brightness(0.8); transform: translateX(10px); }
+  90% { filter: none; transform: none; }
+  100% { filter: none; transform: none; }
+}
+
+/* Añadir animación de desvanecimiento progresivo al overlay glitch para que desaparezca suavemente durante los 5 segundos. */
+.fadeout-glitch {
+  animation: glitch-fadeout infinite linear forwards;
+}
+@keyframes glitch-fadeout {
+  0% { opacity: 0.5; }
+ /* 50% de opacidad a los 10 segundos */
+  50% { opacity: 0.5; }
 }

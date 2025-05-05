@@ -56,9 +56,12 @@ function RegisterPage() {
   };
 
   return (
-    <div>
-      <h1>Registro</h1>
-      <form onSubmit={handleSubmit}>
+    // Contenedor principal: define el ancho y centra el bloque
+    <div style={{ maxWidth: '400px', margin: '2rem auto 0 auto', padding: '0 1rem' }}>
+      {/* Título: Asegurar alineación izquierda */}
+      <h1 style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Registro</h1>
+      {/* Formulario: Asegurar alineación izquierda */}
+      <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
         <div>
           <label htmlFor="username">Usuario:</label>
           <input
@@ -68,6 +71,7 @@ function RegisterPage() {
             onChange={(e) => setUsername(e.target.value)}
             required
             disabled={loading} // Deshabilitar mientras carga
+            style={{ display: 'block', width: '100%', marginBottom: '1rem' }}
           />
         </div>
         <div>
@@ -79,6 +83,7 @@ function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={loading}
+            style={{ display: 'block', width: '100%', marginBottom: '1rem' }}
           />
         </div>
         <div>
@@ -90,11 +95,12 @@ function RegisterPage() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             disabled={loading}
+            style={{ display: 'block', width: '100%', marginBottom: '1rem' }}
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} style={{ display: 'block', width: '100%' }}>
           {loading ? 'Registrando...' : 'Registrarse'}
         </button>
       </form>

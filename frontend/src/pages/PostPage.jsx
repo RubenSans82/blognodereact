@@ -45,12 +45,16 @@ function PostPage() {
   }
 
   return (
-    <div className="post-content-wrapper">
+    // Mover el h1 fuera del div.post-content-wrapper
+    <>
       <h1>{post.title}</h1>
-      <p>Por: {post.username} el {new Date(post.created_at).toLocaleDateString()}</p>
-      {/* Renderizar el cuerpo. Si puede contener saltos de línea, usar white-space: pre-wrap */}
-      <div style={{ whiteSpace: 'pre-wrap' }}>{post.body}</div>
-    </div>
+      <div className="post-content-wrapper">
+        {/* El título ya no está aquí */}
+        <p>Por: {post.username} el {new Date(post.created_at).toLocaleDateString()}</p>
+        {/* Renderizar el cuerpo. Si puede contener saltos de línea, usar white-space: pre-wrap */}
+        <div style={{ whiteSpace: 'pre-wrap' }}>{post.body}</div>
+      </div>
+    </>
   );
 }
 

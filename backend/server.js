@@ -102,7 +102,8 @@ app.post('/api/auth/login', async (req, res) => {
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' }); // Token expira en 1 hora
 
     console.log(`Login exitoso para usuario: ${username}`); // Log añadido
-    res.json({ message: 'Login exitoso.', token: token });
+    // Añadir userId a la respuesta JSON
+    res.json({ message: 'Login exitoso.', token: token, userId: user.id });
 
   } catch (error) {
     console.error('Error en login:', error);
@@ -116,9 +117,9 @@ app.post('/api/auth/login', async (req, res) => {
 // Obtener todos los posts (público)
 app.get('/api/posts', async (req, res) => {
   try {
-    // Obtener posts y el nombre de usuario del autor
+    // Obtener posts, el nombre de usuario del autor y el user_id del post
     const [posts] = await dbPool.query(`
-      SELECT p.id, p.title, p.body, p.created_at, u.username
+      SELECT p.id, p.title, p.body, p.created_at, u.username, p.user_id
       FROM posts p
       JOIN users u ON p.user_id = u.id
       ORDER BY p.created_at DESC
@@ -166,6 +167,43 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Error creando post:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+
+// Borrar un post (protegido por JWT y verificación de autoría)
+app.delete('/api/posts/:id', authenticateToken, async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.userId; // ID del usuario autenticado
+
+  try {
+    // 1. Verificar que el post existe y obtener su user_id
+    const [posts] = await dbPool.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
+
+    if (posts.length === 0) {
+      return res.status(404).json({ message: 'Post no encontrado.' });
+    }
+
+    const postUserId = posts[0].user_id;
+
+    // 2. Verificar si el usuario autenticado es el autor del post
+    if (postUserId !== userId) {
+      return res.status(403).json({ message: 'No autorizado para borrar este post.' }); // 403 Forbidden
+    }
+
+    // 3. Si es el autor, proceder a borrar
+    const [result] = await dbPool.query('DELETE FROM posts WHERE id = ?', [postId]);
+
+    if (result.affectedRows === 0) {
+      // Esto no debería pasar si la verificación anterior funcionó, pero es una comprobación extra
+      return res.status(404).json({ message: 'Post no encontrado para borrar.' });
+    }
+
+    console.log(`Post ${postId} borrado por usuario ${userId}`);
+    res.status(200).json({ message: 'Post borrado con éxito.' }); // O res.sendStatus(204) si no quieres enviar cuerpo
+
+  } catch (error) {
+    console.error(`Error borrando post ${postId}:`, error);
+    res.status(500).json({ message: 'Error interno del servidor al intentar borrar el post.' });
   }
 });
 

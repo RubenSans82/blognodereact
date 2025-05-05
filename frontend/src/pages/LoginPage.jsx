@@ -29,17 +29,22 @@ function LoginPage() {
         throw new Error(data.message || `HTTP error! status: ${response.status}`);
       }
 
-      // Login exitoso: guardar token y redirigir
-      if (data.token) {
-        localStorage.setItem('token', data.token); // Guardar token en localStorage
-        // Guardar también el nombre de usuario
+      // Login exitoso: guardar token, username y userId
+      if (data.token && data.userId) { // Asegurarse que userId viene en la respuesta
+        localStorage.setItem('token', data.token);
         localStorage.setItem('username', username);
-        // Opcional: Actualizar estado global de autenticación si usas Context o Redux
-        console.log('Login exitoso, token y username guardados.');
+        localStorage.setItem('userId', data.userId.toString());
+        // Flag para mostrar glitch en HomePage
+        localStorage.setItem('justLoggedIn', '1');
+        console.log('Login exitoso, token, username y userId guardados.');
+        
+        // Lanzar evento para mostrar el glitch globalmente
+        window.dispatchEvent(new Event('show-glitch'));
+
         navigate('/'); // Redirigir a la página principal
       } else {
-        // Si no hay token en la respuesta (aunque la respuesta sea 200 OK)
-        throw new Error('No se recibió token del servidor.');
+        // Si falta token o userId en la respuesta
+        throw new Error('Respuesta de login incompleta del servidor.');
       }
 
     } catch (err) {
@@ -51,9 +56,12 @@ function LoginPage() {
   };
 
   return (
-    <div style={{ textAlign: 'center' }}> {/* Add text-align center here */}
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
+    // Contenedor principal: define el ancho y centra el bloque
+    <div style={{ maxWidth: '400px', margin: '2rem auto 0 auto', padding: '0 1rem' }}>
+      {/* Título: Asegurar alineación izquierda (por defecto en h1) */}
+      <h1 style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Login</h1>
+      {/* Formulario: Asegurar alineación izquierda (por defecto en form) */}
+      <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
         <div>
           <label htmlFor="username">Usuario:</label>
           <input
@@ -63,6 +71,7 @@ function LoginPage() {
             onChange={(e) => setUsername(e.target.value)}
             required
             disabled={loading} // Deshabilitar mientras carga
+            style={{ display: 'block', width: '100%', marginBottom: '1rem' }} // Estilos para inputs
           />
         </div>
         <div>
@@ -74,10 +83,11 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={loading}
+            style={{ display: 'block', width: '100%', marginBottom: '1rem' }} // Estilos para inputs
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" disabled={loading}>
+        {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
+        <button type="submit" disabled={loading} style={{ display: 'block', width: '100%' }}> {/* Botón ancho completo */}
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
       </form>

@@ -1,31 +1,44 @@
 import { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom'; // Importar Outlet
-import Navbar from './components/Navbar'; // Importar Navbar
+import { Outlet } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import './App.css';
 
 function App() {
-  // Puedes mantener estado global aquí si lo necesitas (ej. estado de autenticación)
-  // const [message, setMessage] = useState(''); // Ya no necesitamos el mensaje de prueba aquí
+  // Estado global para el glitch, inicializado según el token
+  const [showGlitch, setShowGlitch] = useState(() => Boolean(localStorage.getItem('token')));
 
-  // useEffect(() => { // Ya no necesitamos la llamada de prueba aquí
-  //   fetch('http://localhost:3001/api')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       setMessage(data.message);
-  //       console.log(data);
-  //     })
-  //     .catch(error => console.error('Error al llamar a la API:', error));
-  // }, []);
+  useEffect(() => {
+    // Función para mostrar el glitch
+    const handleShowGlitch = () => setShowGlitch(true);
+    // Función para ocultar el glitch
+    const handleHideGlitch = () => setShowGlitch(false);
+
+    // Escuchar eventos personalizados
+    window.addEventListener('show-glitch', handleShowGlitch);
+    window.addEventListener('hide-glitch', handleHideGlitch);
+
+    // Limpiar listeners al desmontar
+    return () => {
+      window.removeEventListener('show-glitch', handleShowGlitch);
+      window.removeEventListener('hide-glitch', handleHideGlitch);
+    };
+  }, []); // Solo se ejecuta una vez al montar
 
   return (
     <>
-      <Navbar /> {/* Mostrar la barra de navegación en todas las páginas */}
+      {showGlitch && (
+        <div className="glitch-overlay glitch-fade">
+          {[...Array(64)].map((_, i) => (
+            <div key={i} className="glitch-line" style={{ top: `${i * 1.5625}%` }}></div>
+          ))}
+        </div>
+      )}
+      <Navbar />
       <main>
-        <Outlet /> {/* Aquí se renderizarán los componentes de las rutas anidadas */}
+        <Outlet />
       </main>
-      {/* Puedes añadir un Footer aquí si quieres */}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
