@@ -71,42 +71,60 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// Login de usuario
 app.post('/api/auth/login', async (req, res) => {
+  // Log 1: Ver qué datos llegan en el cuerpo de la solicitud
+  console.log('--- Inicio Petición Login ---');
+  console.log('Datos recibidos en req.body:', req.body);
+
   const { username, password } = req.body;
 
   if (!username || !password) {
+    console.log('Login fallido: Faltan usuario o contraseña en la solicitud.');
     return res.status(400).json({ message: 'Usuario y contraseña son requeridos.' });
   }
 
   try {
     // Buscar usuario
-    console.log(`Intento de login para usuario: ${username}`); // Log añadido
+    console.log(`Buscando usuario: "${username}" en la base de datos.`);
     const [users] = await dbPool.query('SELECT id, username, password_hash FROM users WHERE username = ?', [username]);
+
     if (users.length === 0) {
-      console.log(`Login fallido: Usuario "${username}" no encontrado.`); // Log añadido
-      return res.status(401).json({ message: 'Credenciales inválidas.' }); // Usuario no encontrado
+      console.log(`Login fallido: Usuario "${username}" no encontrado.`);
+      // Es importante devolver 401 aquí también para no revelar si el usuario existe o no
+      return res.status(401).json({ message: 'Credenciales inválidas.' });
     }
 
     const user = users[0];
+    console.log(`Usuario encontrado: ID=${user.id}, Username=${user.username}`);
+
+    // Log 2: Ver la contraseña recibida y el hash almacenado ANTES de comparar
+    console.log(`Comparando contraseña recibida (texto plano): "${password}"`);
+    console.log(`Con hash almacenado para ${user.username}: "${user.password_hash}"`);
 
     // Comparar contraseña
     const match = await bcrypt.compare(password, user.password_hash);
+
     if (!match) {
-      console.log(`Login fallido: Contraseña incorrecta para usuario "${username}".`); // Log añadido
-      return res.status(401).json({ message: 'Credenciales inválidas.' }); // Contraseña incorrecta
+      // Log 3: Indicar explícitamente que la comparación falló
+      console.log(`Resultado de bcrypt.compare para "${username}": false (Contraseña incorrecta)`);
+      return res.status(401).json({ message: 'Credenciales inválidas.' });
     }
 
-    // Generar JWT
-    const tokenPayload = { userId: user.id, username: user.username };
-    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' }); // Token expira en 1 hora
+    // Log 4: Indicar que la comparación fue exitosa
+    console.log(`Resultado de bcrypt.compare para "${username}": true (Contraseña correcta)`);
 
-    console.log(`Login exitoso para usuario: ${username}`); // Log añadido
+    // Generar JWT
+    const payload = { userId: user.id, username: user.username };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }); // Token expira en 1 hora
+
+    console.log(`Login exitoso para "${username}". Token generado.`);
+    console.log('--- Fin Petición Login ---');
     // Añadir userId a la respuesta JSON
     res.json({ message: 'Login exitoso.', token: token, userId: user.id });
 
   } catch (error) {
-    console.error('Error en login:', error);
+    console.error('Error grave durante el login:', error);
+    console.log('--- Fin Petición Login (con error) ---');
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });
