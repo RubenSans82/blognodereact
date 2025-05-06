@@ -1,28 +1,46 @@
 import { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import './App.css';
 
 function App() {
-  // Estado global para el glitch, inicializado según el token
   const [showGlitch, setShowGlitch] = useState(() => Boolean(localStorage.getItem('token')));
+  const [showLoginAnimation, setShowLoginAnimation] = useState(false);
+  const [showLogoutAnimation, setShowLogoutAnimation] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Función para mostrar el glitch
     const handleShowGlitch = () => setShowGlitch(true);
-    // Función para ocultar el glitch
     const handleHideGlitch = () => setShowGlitch(false);
-
-    // Escuchar eventos personalizados
     window.addEventListener('show-glitch', handleShowGlitch);
     window.addEventListener('hide-glitch', handleHideGlitch);
 
-    // Limpiar listeners al desmontar
+    const handleTriggerLoginAnimation = () => {
+      setShowLoginAnimation(true);
+      setTimeout(() => {
+        setShowLoginAnimation(false);
+        setShowGlitch(true); // <-- AHORA SE ACTIVA AQUÍ, DESPUÉS DE 1.5s
+      }, 1500); // Duración de la animación tv-turn-on
+    };
+    window.addEventListener('login-success-animation', handleTriggerLoginAnimation);
+
+    const handleTriggerLogoutAnimation = () => {
+      setShowGlitch(false); // <-- AÑADIDO: Desactivar glitch global al iniciar animación de logout
+      setShowLogoutAnimation(true);
+      setTimeout(() => {
+        setShowLogoutAnimation(false);
+        navigate('/login');
+      }, 2700);
+    };
+    window.addEventListener('trigger-logout-animation', handleTriggerLogoutAnimation);
+
     return () => {
       window.removeEventListener('show-glitch', handleShowGlitch);
       window.removeEventListener('hide-glitch', handleHideGlitch);
+      window.removeEventListener('login-success-animation', handleTriggerLoginAnimation);
+      window.removeEventListener('trigger-logout-animation', handleTriggerLogoutAnimation);
     };
-  }, []); // Solo se ejecuta una vez al montar
+  }, [navigate]);
 
   return (
     <>
@@ -33,6 +51,19 @@ function App() {
           ))}
         </div>
       )}
+
+      {showLoginAnimation && (
+        <div className="login-overlay active">
+          <div className="tv-line-on"></div>
+        </div>
+      )}
+
+      {showLogoutAnimation && (
+        <div className="logout-overlay active">
+          <div className="tv-line"></div>
+        </div>
+      )}
+
       <Navbar />
       <main>
         <Outlet />

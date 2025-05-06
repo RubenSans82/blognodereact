@@ -1,27 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
+/* Estilos globales no condicionales (aplican siempre) */
 :root {
-  /* Cambiar la fuente principal a VT323 */
-  font-family: 'Share Tech Mono', monospace;
+  /* Variables de color base que podrían usarse fuera del modo retro si es necesario */
+  --default-background-color: #121212; /* Un fondo oscuro genérico */
+  --default-text-color: #e0e0e0; /* Un texto claro genérico */
+  --default-primary-color: #6200ee; /* Un primario genérico */
+
+  font-family: 'Share Tech Mono', monospace; /* Fuente base global */
   line-height: 1.6;
   font-weight: 400;
 
-  /* 80s Neon Color Palette */
-  --background-color: #0d0221; /* Deep dark blue/purple */
-  --surface-color: #261447;    /* Slightly lighter dark purple */
-  --text-color: #f0f0f0;       /* Off-white */
-  --text-muted: #a0a0a0;      /* Lighter grey */
-  --primary-color: #00f6ff;    /* Neon Cyan */
-  --primary-hover-color: #ff00ff; /* Neon Magenta */
-  --border-color: #ff00ff;     /* Neon Magenta for borders */
-
-  color-scheme: light dark;
-  color: var(--text-color);
-  background-color: var(--background-color);
+  color-scheme: light dark; /* Permitir ambos, pero el retro forzará dark */
+  color: var(--default-text-color);
+  background-color: var(--default-background-color);
 
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility; /* Por defecto, el modo retro lo cambiará */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -33,326 +29,332 @@
   box-sizing: border-box;
 }
 
-a {
+/* Estilos para body.retro-active y sus descendientes */
+body.retro-active {
+  --background-color: #0d0221;
+  --surface-color: #1a0f35;
+  --text-color: #f0f0f0;
+  --text-muted: #b0b0b0;
+  --primary-color: #00f6ff;    /* Neon Cyan */
+  --primary-hover-color: #ff00ff; /* Neon Magenta */
+  --accent-color: #ffff00;
+  --border-color: var(--primary-hover-color);
+
+  color-scheme: dark; /* Forzar modo oscuro */
+  color: var(--text-color);
+  background-color: var(--background-color);
+
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+body.retro-active a {
   font-weight: 500;
-  color: var(--primary-color); /* Use neon cyan for links */
-  text-decoration: inherit;
-  text-shadow: 0 0 3px var(--primary-color); /* Subtle neon glow */
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  color: var(--primary-color);
+  text-decoration: none;
+  text-shadow: 1px 1px 0px var(--primary-hover-color);
+  transition: color 0.1s steps(1, end), text-shadow 0.1s steps(1, end);
 }
-a:hover {
-  color: var(--primary-hover-color); /* Use neon magenta for hover */
-  text-shadow: 0 0 6px var(--primary-hover-color); /* Stronger glow on hover */
-}
-
-body {
-  margin: 0;
-  display: flex;
-  /* Cambiar place-items a start para alinear arriba */
-  place-items: start; /* Alinear contenido al inicio (arriba) */
-  justify-content: center; /* Mantener centrado horizontal */
-  min-width: 320px;
-  min-height: 100vh;
-  /* Añadir estilos de fondo */
-  background-image: url('/fondo.png'); /* Ruta desde la carpeta public */
-  background-size: cover; /* Cubrir todo el fondo */
-  background-position: center; /* Centrar la imagen */
-  background-repeat: no-repeat; /* No repetir la imagen */
-  background-attachment: fixed; /* Fijar el fondo al hacer scroll */
+body.retro-active a:hover {
+  color: var(--primary-hover-color);
+  text-shadow: 1px 1px 0px var(--primary-color);
 }
 
-.share-tech-mono-regular {
+body.retro-active body { /* Estilos específicos para el body en modo retro si fueran necesarios además de los de arriba */
+  /* background-image: url('/fondo.png'); Ya está en el body global, se puede sobreescribir si es diferente */
+  /* ... otros estilos de body ... */
+}
+
+body.retro-active .share-tech-mono-regular {
   font-family: "Share Tech Mono", monospace;
   font-weight: 400;
   font-style: normal;
 }
 
-h1 {
-  font-size: 2.5em; /* Ajustar tamaño si Press Start 2P es muy grande */
+body.retro-active h1 {
+  font-size: 2.5em;
   line-height: 1.2;
   color: var(--primary-hover-color);
-  text-shadow: 0 0 8px var(--primary-hover-color);
+  text-shadow: 2px 2px 0px var(--primary-color);
   text-align: left;
   margin-bottom: 1rem;
 }
 
-h2 {
+body.retro-active h2 {
    font-size: 1.5em;
    font-weight: 600;
    margin-bottom: 0.75rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  /* Usar Press Start 2P para los encabezados */
+body.retro-active h1,
+body.retro-active h2,
+body.retro-active h3,
+body.retro-active h4,
+body.retro-active h5,
+body.retro-active h6 {
   font-family: 'Share Tech Mono', cursive;
 }
 
-button {
-  border-radius: 6px; /* Slightly less rounded */
-  border: 1px solid var(--primary-color); /* Use primary color for border */
-  padding: 0.7em 1.4em; /* Slightly larger padding */
+body.retro-active button {
+  border-radius: 0;
+  border: 2px solid var(--primary-color);
+  padding: 0.7em 1.4em;
   font-size: 1em;
-  font-weight: 500;
-  font-family: "Share Tech Mono", monospace; /* Asegurar que usen la fuente base */
-  background-color: var(--primary-color); /* Solid background */
-  color: var(--button-text-color); /* Use specific button text color */
+  font-weight: bold;
+  font-family: "Share Tech Mono", monospace;
+  background-color: transparent;
+  color: var(--primary-color);
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease, border-color 0.2s ease-in-out; /* Added transform */
+  transition: background-color 0.1s steps(1, end), color 0.1s steps(1, end), transform 0.1s steps(1, end), border-color 0.1s steps(1, end);
+  box-shadow: none;
 }
-button:hover {
-  background-color: var(--primary-hover-color);
+body.retro-active button:hover {
+  background-color: var(--primary-color);
+  color: var(--background-color);
   border-color: var(--primary-color);
-  transform: translateY(-2px); /* Subtle lift effect */
-  box-shadow: 0 0 8px var(--primary-color); /* Neon glow on hover */
+  transform: none;
+  box-shadow: none;
 }
-button:active { /* Added active state */
-  background-color: var(--primary-active-color);
-  border-color: var(--primary-active-color);
-  transform: translateY(0px); /* Return to original position */
+body.retro-active button:active {
+  background-color: var(--primary-hover-color);
+  border-color: var(--primary-hover-color);
+  color: var(--background-color);
+  transform: none;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-  outline-color: var(--primary-hover-color); /* Magenta focus outline */
+body.retro-active button:focus,
+body.retro-active button:focus-visible {
+  outline: 2px solid var(--primary-hover-color);
+  outline-offset: 2px;
 }
-button:disabled {
-  opacity: 0.5;
+body.retro-active button:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-  background-color: var(--border-color); /* Darker disabled background */
-  border-color: var(--border-color);
+  background-color: var(--surface-color);
+  border-color: var(--text-muted);
   color: var(--text-muted);
-  transform: none; /* No hover effect when disabled */
+  transform: none;
 }
 
-/* Base styles for action buttons/links in post list */
-.button-edit,
-.button-delete {
-  /* Inherit general button styles or define them here */
-  display: inline-block; /* Important for Link to behave like button */
-  border-radius: 6px;
-  padding: 0.5em 1em; /* Adjust padding as needed */
-  font-size: 0.9em; /* Adjust font size as needed */
-  font-weight: 500;
+body.retro-active .button-edit,
+body.retro-active .button-delete {
+  display: inline-block;
+  border-radius: 0;
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  font-weight: bold;
   font-family: 'VT323', monospace;
   cursor: pointer;
   text-align: center;
-  text-decoration: none; /* Remove underline from link */
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  text-decoration: none;
+  transition: background-color 0.1s steps(1, end), color 0.1s steps(1, end), border-color 0.1s steps(1, end);
+  box-shadow: none;
 }
 
-/* Specific styles for Edit button/link */
-.button-edit {
-  border: 1px solid var(--primary-color); /* Cyan border */
-  background-color: var(--primary-color); /* Cyan background */
-  color: var(--background-color); /* Dark text */
+body.retro-active .button-edit {
+  border: 2px solid var(--primary-color);
+  background-color: transparent;
+  color: var(--primary-color);
+}
+body.retro-active .button-edit:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--background-color);
+  transform: none;
+  box-shadow: none;
 }
 
-.button-edit:hover {
-  background-color: var(--primary-hover-color); /* Magenta background on hover */
-  border-color: var(--primary-hover-color); /* Magenta border on hover */
-  color: var(--text-color); /* Light text on hover */
-  transform: translateY(-2px);
-  box-shadow: 0 0 8px var(--primary-hover-color);
+body.retro-active .button-delete {
+  border: 2px solid #ff7b7b;
+  background-color: transparent;
+  color: #ff7b7b;
+}
+body.retro-active .button-delete:hover {
+  background-color: #ff7b7b;
+  border-color: #ff7b7b;
+  color: var(--background-color);
+  transform: none;
+  box-shadow: none;
 }
 
-/* Specific styles for Delete button */
-.button-delete {
-  border: 1px solid #ff7b7b; /* Red border */
-  background-color: #ff7b7b; /* Red background */
-  color: var(--background-color); /* Dark text */
+body.retro-active #root {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 8rem 2rem 2rem 2rem; /* Aumentado padding-top de 80px a 6rem (96px) */
+  text-align: left;
+  width: 100%;
 }
 
-.button-delete:hover {
-  background-color: #ff4d4d; /* Darker red background on hover */
-  border-color: #ff4d4d; /* Darker red border on hover */
-  color: var(--text-color); /* Light text on hover */
-  transform: translateY(-2px);
-  box-shadow: 0 0 8px #ff4d4d;
-}
-
-#root {
-  max-width: 960px; /* Restaurar ancho máximo anterior */
-  /* Ajustar margen para que no dependa del centrado flex del body */
-  margin: 0 auto; /* Centrado horizontal, sin margen vertical automático */
-  /* Añadir padding-top para dejar espacio para el navbar fijo */
-  /* Ajusta este valor según la altura real de tu navbar */
-  padding: 80px 2rem 2rem 2rem; /* Añadido 80px de padding superior */
-  text-align: left; /* Mantener alineación izquierda */
-  width: 100%; /* Asegurar que use el max-width */
-  /* Ejemplo: añadir un fondo semi-transparente si el fondo global dificulta la lectura */
-  /* background-color: rgba(var(--surface-color-rgb, 38, 20, 71), 0.9); */
-  /* border-radius: 8px; */
-}
-
-/* General Form Styling */
-form {
+body.retro-active form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem; /* Increased gap */
-  max-width: 450px; /* Slightly wider form */
+  gap: 1.2rem;
+  max-width: 450px;
   margin: 2rem auto;
-  padding: 2.5rem; /* More padding */
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background-color: var(--surface-color); /* Use surface color */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Adjusted shadow */
+  padding: 2rem;
+  border: 2px solid var(--border-color);
+  border-radius: 0;
+  background-color: var(--surface-color);
+  box-shadow: none;
 }
 
-form div {
+body.retro-active form div {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
 
-form label {
+body.retro-active form label {
   margin-bottom: 0.5rem;
   font-weight: bold;
-  font-family: "Share Tech Mono", monospace; /* Asegurar que usen la fuente base */
+  font-family: "Share Tech Mono", monospace;
 }
 
-input[type="text"],
-input[type="password"],
-textarea {
-  padding: 0.9em; /* More padding */
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-bg);
+body.retro-active input[type="text"],
+body.retro-active input[type="password"],
+body.retro-active textarea {
+  padding: 0.8em;
+  border-radius: 0;
+  border: 2px solid var(--border-color);
+  background-color: var(--background-color);
   color: var(--text-color);
   font-size: 1em;
-  font-family: "Share Tech Mono", monospace; /* Asegurar que usen la fuente base */
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  font-family: "Share Tech Mono", monospace;
+  transition: border-color 0.1s steps(1, end), box-shadow 0.1s steps(1, end);
+  box-shadow: none;
 }
-input[type="text"]:focus,
-input[type="password"]:focus,
-textarea:focus {
-  border-color: var(--primary-color); /* Highlight border on focus */
-  outline: none; /* Remove default outline */
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 30%, transparent); /* Use color-mix for glow */
+body.retro-active input[type="text"]:focus,
+body.retro-active input[type="password"]:focus,
+body.retro-active textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: none;
 }
 
-textarea {
+body.retro-active textarea {
   min-height: 120px;
   resize: vertical;
 }
 
-/* Error/Success Messages */
-p[style*="color: red"] {
-  color: #ff7b7b !important; /* Adjusted red for dark bg */
+body.retro-active p[style*="color: red"] {
+  color: #ff7b7b !important;
   font-weight: bold;
-  text-align: center; /* Center error messages */
-  margin-top: -0.5rem; /* Adjust spacing */
-  margin-bottom: 0.5rem;
-}
-p[style*="color: green"] {
-  color: #7bff7b !important; /* Adjusted green for dark bg */
-  font-weight: bold;
-  text-align: center; /* Center success messages */
+  text-align: center;
   margin-top: -0.5rem;
   margin-bottom: 0.5rem;
+  background-color: var(--surface-color);
+  padding: 0.5em;
+  border: 1px solid #ff7b7b;
+}
+body.retro-active p[style*="color: green"] {
+  color: #7bff7b !important;
+  font-weight: bold;
+  text-align: center;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--surface-color);
+  padding: 0.5em;
+  border: 1px solid #7bff7b;
 }
 
-/* Post List Styling - Card like */
-ul {
+body.retro-active ul { /* Esto podría afectar a la lista de posts y a la navbar si no se especifica más */
   list-style: none;
   padding: 0;
-  margin: 2rem 0;
-  display: grid; /* Use grid for layout */
-  gap: 1.5rem; /* Gap between cards */
-  /* Responsive grid columns */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  perspective: 1000px; /* Add perspective for 3D hover effect */
+  /* margin: 2rem 0; */ /* Quitado para evitar conflicto con navbar ul */
+  /* display: grid; */ /* Quitado para evitar conflicto con navbar ul */
+  /* gap: 1.5rem; */ /* Quitado para evitar conflicto con navbar ul */
+  /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */ /* Quitado */
+  perspective: none;
 }
 
-li {
-  /* Usar rgba para el color de fondo con transparencia */
-  background-color: rgba(38, 20, 71, 0.85); /* 85% opacidad del color --surface-color (#261447) */
-  border: 1px solid var(--border-color);
-  padding: 1.5rem;
-  margin-bottom: 0;
-  border-radius: 8px;
-  text-align: left;
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out, box-shadow 0.3s ease-in-out, outline-color 0.3s ease-in-out;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  outline: 2px solid transparent;
-  outline-offset: 3px;
+/* Específico para la lista de posts */
+body.retro-active ul.post-list {
+    margin: 2rem 0;
+    display: grid;
+    gap: 2rem; /* Aumentado de 1.5rem a 2rem */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
 
-  /* --- JS IntersectionObserver Animation Styles --- */
+body.retro-active li { /* Estilo base para LIs en modo retro, la navbar lo sobreescribirá */
+  background-color: var(--surface-color);
+  border: 2px solid var(--border-color);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0;
+  text-align: left;
+  transition: opacity 0.2s steps(3, end), transform 0.2s steps(3, end), border-color 0.1s steps(1, end);
+  box-shadow: none;
+  outline: none;
+}
+
+/* Anulación específica para los LI dentro del navbar en modo retro */
+body.retro-active .navbar-container ul li {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+/* Estilos para LIs de la lista de posts */
+body.retro-active ul.post-list li {
   opacity: 0;
   transform: translateY(20px);
 }
 
-li.visible { /* Class added by IntersectionObserver */
-  opacity: 1; /* Fade in */
-  transform: translateY(0); /* Move to original position */
+body.retro-active ul.post-list li.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Update the hover rule for the new animation */
-li:hover {
-  /* Remove previous transform and static outline/shadow */
-  /* transform: scale(1.02) rotateY(10deg) rotateX(5deg); */
-  /* outline: 2px solid var(--primary-hover-color); */
-  /* outline-offset: 4px; */
-  /* box-shadow: 0 15px 35px rgba(var(--primary-color-rgb), 0.5); */
-
-  /* Apply the new border/glow animation */
-  animation: neon-border-pulse 1s infinite alternate ease-in-out;
+body.retro-active ul.post-list li:hover {
+  border-color: var(--primary-color);
 }
 
-li h2 {
-  /* Usar Press Start 2P para los encabezados */
+body.retro-active li h2 { /* Asumiendo que esto es para LIs de posts */
   font-family: 'Share Tech Mono', cursive;
-  /* Reducir tamaño de fuente para h2 dentro de li */
-  font-size: 1.1em; /* Ajustar según sea necesario */
+  font-size: 1.1em;
   margin-bottom: 0.5rem;
 }
 
-li p {
-  /* Reducir tamaño de fuente para p dentro de li */
-  font-size: 0.85em; /* Ajustar según sea necesario */
-  color: var(--text-muted); /* Use muted text color */
+body.retro-active li p { /* Asumiendo que esto es para LIs de posts */
+  font-size: 0.85em;
+  color: var(--text-muted);
 }
 
-li h2 {
-  margin-bottom: 0.5rem;
-}
-
-li p {
-  font-size: 1em;
-  color: var(--text-muted); /* Use muted text color */
-}
-
-/* Individual Post Styling */
-.post-content-wrapper { /* Add a wrapper class in PostPage.jsx if needed */
+body.retro-active .post-content-wrapper {
    background-color: var(--surface-color);
    padding: 2rem;
-   border-radius: 8px;
-   border: 1px solid var(--border-color);
+   border-radius: 0;
+   border: 2px solid var(--border-color);
    margin-top: 2rem;
-   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+   box-shadow: none;
 }
 
-.post-content-wrapper h1 {
-   text-align: left; /* Align post title left */
+body.retro-active .post-content-wrapper h1 {
+   text-align: left;
    margin-bottom: 0.5rem;
 }
-.post-content-wrapper p:first-of-type { /* Style the author/date line */
+body.retro-active .post-content-wrapper p:first-of-type {
    color: var(--text-muted);
    font-size: 1em;
    margin-bottom: 1.5rem;
 }
 
-div[style*="white-space: pre-wrap"] {
+body.retro-active div[style*="white-space: pre-wrap"] {
   text-align: left;
-  margin-top: 0; /* Remove margin as wrapper handles it */
-  line-height: 1.7; /* Increase body line-height */
-  background-color: transparent; /* Remove inner background */
-  padding: 0; /* Remove inner padding */
+  margin-top: 0;
+  line-height: 1.7;
+  background-color: transparent;
+  padding: 0;
   border-radius: 0;
-  border: none; /* Remove inner border */
+  border: none;
   color: var(--text-color);
 }
 
-/* Define the keyframes for the animation */
+/* Los keyframes no necesitan estar dentro de .retro-active, pero las animaciones que los usan sí */
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -364,26 +366,469 @@ div[style*="white-space: pre-wrap"] {
   }
 }
 
-/* Optional: Keyframes for fade-out (if desired later) */
-/* @keyframes fade-out-down {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-30px); /* Move up slightly on exit 
-  }
-} */
+@keyframes block-pulse {
+  0%, 100% { border-color: var(--primary-hover-color); }
+  50% { border-color: var(--primary-color); }
+}
 
-/* Define the keyframes for the new animation */
-@keyframes neon-border-pulse {
-  0%, 100% {
-    outline-color: var(--primary-hover-color); /* Intense Pink */
-    box-shadow: 0 0 12px var(--primary-hover-color); /* Pink Glow */
+/* Estilos que aplican siempre, pero usan variables que cambian con .retro-active */
+body { /* Estilos del body que aplican siempre */
+  margin: 0;
+  display: flex;
+  place-items: start;
+  justify-content: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-image: url('/fondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /* image-rendering se aplicará condicionalmente mediante body.retro-active */
+}
+
+/* Estilos de enlaces por defecto (cuando no está .retro-active) */
+a {
+  font-weight: 500;
+  color: var(--default-primary-color); /* Color por defecto */
+  text-decoration: inherit;
+  transition: color 0.25s;
+}
+a:hover {
+  color: color-mix(in srgb, var(--default-primary-color) 70%, white); /* Aclarar al pasar el ratón */
+}
+
+/* Estilos de h1 por defecto */
+h1 {
+  font-size: 2.5em;
+  line-height: 1.2;
+  color: var(--default-text-color); /* Color por defecto */
+  margin-bottom: 1rem;
+}
+
+/* Estilos de botones por defecto */
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit; /* Hereda la fuente monoespaciada global */
+  background-color: #1a1a1a; /* Fondo de botón por defecto */
+  color: var(--default-text-color);
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+button:hover {
+  border-color: var(--default-primary-color);
+  background-color: color-mix(in srgb, #1a1a1a 80%, var(--default-primary-color) 20%);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Estilos de la barra de navegación que aplican siempre (fuera de .retro-active) */
+/* Se usarán variables --default-* o valores específicos no-retro */
+nav { /* Estilo base para la nav fuera del modo retro */
+  background-color: var(--default-background-color); /* Fondo oscuro simple */
+  padding: 0.8rem 0;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid #333; /* Borde sutil */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra suave por defecto */
+}
+
+nav ul {
+  list-style: none;
+  padding: 0 1rem;
+  margin: 0 auto;
+  max-width: 960px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav .logo {
+  height: 2.5em;
+  padding: 0;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 0.5em #aaa); /* Sombra suave por defecto para el logo */
+  transition: filter 0.25s;
+}
+nav .logo:hover {
+   filter: drop-shadow(0 0 0.75em var(--default-primary-color));
+}
+
+nav ul .nav-left,
+nav ul .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+nav ul li:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+nav ul li a,
+nav ul li button {
+  color: var(--default-text-color);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+nav ul li a:hover,
+nav ul li button:hover {
+  color: var(--default-primary-color);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.navbar-logo { /* Enlace del logo */
+  color: var(--default-primary-color);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.5em;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease-in-out;
+  text-shadow: none; /* Sin text-shadow por defecto */
+}
+
+.navbar-logo:hover {
+  color: color-mix(in srgb, var(--default-primary-color) 70%, white);
+}
+
+nav ul li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  font-family: inherit;
+}
+
+/* Estilos de la barra de navegación (.navbar-container) cuando body.retro-active está presente */
+body.retro-active .navbar-container {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  left: 0;
+  transform: none;
+  z-index: 1000;
+  background-image: none;
+  background-color: var(--surface-color); /* Usa variable retro */
+  margin: 0 0 2.5rem 0;
+  padding: 0;
+  border-bottom: 2px solid var(--primary-color); /* Cambiado de var(--border-color) a var(--primary-color) */
+  box-shadow: none;
+}
+
+body.retro-active .navbar-container ul {
+  /* Los estilos de ul (flex, etc.) son mayormente estructurales y pueden permanecer */
+  /* Se asegura que el padding sea consistente con el modo retro */
+  padding: 0.5rem 1rem;
+}
+
+body.retro-active .navbar-container .nav-links,
+body.retro-active .navbar-container .username,
+body.retro-active .navbar-container .nav-button {
+  color: var(--text-color); /* Usa variable retro */
+  text-shadow: 1px 1px 0px var(--background-color); /* Sombra dura retro */
+  text-decoration: none;
+  padding: 0.5em 1em; /* Padding base para todos */
+  border-radius: 0;
+  transition: color 0.1s steps(1, end), text-shadow 0.1s steps(1, end), background-color 0.1s steps(1, end), border-color 0.1s steps(1, end);
+  font-style: normal;
+  font-size: 1.1em; /* Tamaño de fuente base */
+  display: inline-flex; /* Para alinear verticalmente el contenido y que el padding funcione bien */
+  align-items: center; /* Centrar contenido verticalmente */
+  justify-content: center; /* Centrar contenido horizontalmente */
+  text-align: center;
+  line-height: 1; /* Ajustar line-height para mejor control de altura con padding */
+}
+
+/* Estilos específicos para enlaces y saludo de usuario */
+body.retro-active .navbar-container .nav-links,
+body.retro-active .navbar-container .username {
+  border: 2px solid var(--primary-color); /* Borde Cyan */
+  background-color: transparent;
+  color: var(--primary-color);
+  text-shadow: none; /* Quitar text-shadow si interfiere con el look de botón */
+}
+
+body.retro-active .navbar-container .nav-links:hover,
+body.retro-active .navbar-container .username:hover { /* :hover para username también si se quiere */
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border-color: var(--primary-color);
+  text-shadow: none;
+}
+
+/* Estilo específico para el saludo de usuario (si necesita diferenciarse de los links) */
+body.retro-active .navbar-container .username {
+  /* Puede tener estilos ligeramente diferentes si es necesario, pero manteniendo la altura */
+  /* Por ahora, hereda los de .nav-links para consistencia */
+  color: var(--text-muted); /* Un color un poco menos prominente que los links activos */
+  border-color: var(--text-muted); /* Borde a juego con el texto */
+}
+body.retro-active .navbar-container .username:hover {
+  color: var(--background-color);
+  background-color: var(--text-muted);
+  border-color: var(--text-muted);
+}
+
+/* Botón de Logout */
+body.retro-active .navbar-container .nav-button {
+  border: 2px solid var(--primary-hover-color); /* Borde Magenta */
+  background-color: transparent;
+  color: var(--primary-hover-color);
+  font-weight: bold;
+  text-shadow: none;
+}
+
+body.retro-active .navbar-container .nav-button:hover {
+  color: var(--background-color);
+  background-color: var(--primary-hover-color);
+  border-color: var(--primary-hover-color);
+  text-shadow: none;
+}
+
+/* Logo dentro de .navbar-container en modo retro */
+body.retro-active .navbar-container .navbar-logo {
+  color: var(--primary-color); /* Usa variable retro */
+  text-shadow: 1px 1px 0px var(--primary-hover-color); /* Sombra dura retro */
+  border: none; /* Asegurar que no haya borde */
+  padding: 0.5em 0; /* Ajustar padding si es necesario para alineación vertical con otros items */
+  display: inline-flex;
+  align-items: center;
+}
+body.retro-active .navbar-container .navbar-logo:hover {
+  color: var(--primary-hover-color);
+  text-shadow: 1px 1px 0px var(--primary-color);
+}
+
+body.retro-active .navbar-container .navbar-logo img.logo {
+  filter: none; /* Sin filtro en modo retro */
+  border: none; /* Asegurar que la imagen del logo no tenga borde */
+  /* image-rendering: pixelated; ya debería estar heredado de body.retro-active */
+}
+body.retro-active .navbar-container .navbar-logo img.logo:hover {
+  filter: none;
+}
+
+/* Keyframes de animaciones (logout, glitch) - pueden permanecer globales */
+/* Ya están definidos en App.css, asegurarse que no haya duplicados o conflictos */
+/* Si están en App.css, no necesitan repetirse aquí a menos que App.css no se cargue siempre */
+
+/* Overlay para la animación de logout */
+/* Estos estilos son para la funcionalidad de logout, pueden ser globales o condicionales */
+/* Si se mueven de App.css a index.css, asegurarse que App.css ya no los define */
+.logout-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s ease-in;
+}
+
+.logout-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.logout-overlay .tv-line {
+  width: 100%;
+  height: 4px;
+  background-color: white;
+  position: absolute; /* Posicionamiento absoluto respecto al overlay */
+  top: 50%;
+  left: 50%; /* Cambiado de 0 a 50% */
+  transform: translate(-50%, -50%); /* Ajustado para centrar horizontal y verticalmente */
+  box-shadow: 0 0 15px 5px #fff, 0 0 30px 10px #fff, 0 0 50px 15px var(--primary-color);
+  opacity: 0; /* La línea comienza invisible */
+  visibility: hidden; /* Añadido para ocultar completamente hasta que la animación comience */
+  /* La animación se aplicará cuando el overlay esté activo */
+}
+
+.logout-overlay.active .tv-line {
+  opacity: 1;
+  animation: tv-shutdown-enhanced 2s linear forwards;
+  animation-delay: 0.7s;
+}
+
+@keyframes tv-shutdown-enhanced {
+  0% {
+    opacity: 1;
+    visibility: visible; /* Añadido para hacer visible al iniciar la animación */
+    height: 4px;
+    width: 100%;
+    box-shadow: 0 0 15px 5px #fff, 0 0 30px 10px #fff, 0 0 50px 15px var(--primary-color);
   }
-  50% {
-    outline-color: var(--primary-color); /* Neon Cyan */
-    box-shadow: 0 0 12px var(--primary-color); /* Cyan Glow */
+  30% { /* La línea comienza a encogerse verticalmente y el brillo disminuye */
+    opacity: 1;
+    visibility: visible; /* Mantener visible durante la animación */
+    height: 2px; /* Más delgada */
+    width: 100%;
+    box-shadow: 0 0 10px 2px #fff, 0 0 20px 5px #fff, 0 0 30px 10px var(--primary-color);
   }
+  60% { /* La línea se encoge a un punto brillante */
+    opacity: 0.8; /* Ligeramente menos opaca */
+    visibility: visible; /* Mantener visible */
+    height: 2px; /* Mantiene la altura mínima mientras se encoge horizontalmente */
+    width: 0%; /* Se encoge a un punto */
+    box-shadow: 0 0 5px 1px #fff, 0 0 10px 2px #fff; /* Brillo más pequeño */
+  }
+  100% { /* El punto se desvanece */
+    opacity: 0;
+    visibility: hidden; /* Añadido para ocultar al finalizar la animación */
+    height: 2px; /* Mantiene la altura */
+    width: 0%; /* Sigue siendo un punto */
+    box-shadow: none; /* Sin brillo */
+  }
+}
+
+/* Overlay para la animación de login */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: black; /* Fondo negro inicial */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Encima de todo */
+  opacity: 1; /* Comienza visible y la animación lo hace desaparecer */
+  pointer-events: none; 
+}
+
+.login-overlay.active {
+  /* No se necesita 'pointer-events: auto;' ya que la animación es para desaparecer */
+}
+
+.login-overlay .tv-line-on {
+  width: 0%;
+  height: 1px; /* Comienza como una línea fina */
+  background-color: white;
+  opacity: 0;
+  box-shadow: 0 0 15px 2px #fff, 0 0 30px 5px #fff; /* Efecto de brillo inicial */
+}
+
+.login-overlay.active .tv-line-on {
+  animation: tv-turn-on 1.5s linear forwards;
+}
+
+@keyframes tv-turn-on {
+  0% {
+    width: 0%;
+    height: 1px;
+    opacity: 0.6;
+    box-shadow: 0 0 10px 2px #fff, 0 0 20px 5px #fff;
+  }
+  20% { /* La línea aparece y se ensancha horizontalmente */
+    width: 100%;
+    height: 2px;
+    opacity: 1;
+    box-shadow: 0 0 25px 8px #fff, 0 0 50px 15px #fff, 0 0 70px 20px var(--primary-color);
+  }
+  80% { /* Comienza a expandirse verticalmente, como un flash */
+    width: 100%;
+    height: 100%;
+    opacity: 0.85;
+    background-color: rgba(255, 255, 255, 0.8); /* Flash blanco brillante */
+    box-shadow: 0 0 60px 30px #fff, 0 0 100px 50px var(--primary-color);
+  }
+  95% { /* El flash se desvanece, la "imagen" se estabiliza */
+    width: 100%;
+    height: 100%;
+    opacity: 0.5; /* El overlay comienza a desvanecerse */
+    background-color: rgba(0,0,0,0.5);
+    box-shadow: none;
+  }
+  100% { /* Completamente transparente, revelando el contenido de la app */
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* Estilos de Glitch Overlay - pueden permanecer globales o condicionales */
+/* Si están en App.css, no necesitan repetirse aquí */
+.glitch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: transparent;
+  opacity: 0.5;
+}
+
+.glitch-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 0.3%;
+  background: linear-gradient(90deg, #fff 0%, #00fff7 30%, #ff00ff 70%, #fff 100%);
+  opacity: 0.18;
+  mix-blend-mode: lighten;
+  animation: glitch-move 0.125s infinite linear;
+  filter: saturate(2.5) contrast(1.5) brightness(1.2) grayscale(0.3);
+}
+
+.glitch-line:nth-child(2n) { opacity: 0.22; animation-delay: 0.0125s; }
+.glitch-line:nth-child(3n) { opacity: 0.28; animation-delay: 0.025s; }
+.glitch-line:nth-child(4n) { opacity: 0.15; animation-delay: 0.0375s; }
+/* ... (resto de nth-child para glitch-line) ... */
+.glitch-line:nth-child(64n) { opacity: 0.14; animation-delay: 0.7875s; }
+
+@keyframes glitch-move {
+  0%   { transform: translateX(0) scaleY(1); filter: blur(0px) brightness(1); }
+  10%  { transform: translateX(-10px) scaleY(1.1); filter: blur(1px) brightness(1.2); }
+  20%  { transform: translateX(8px) scaleY(0.9); filter: blur(0.5px) brightness(0.8); }
+  30%  { transform: translateX(-5px) scaleY(1.2); filter: blur(1.5px) brightness(1.3); }
+  40%  { transform: translateX(12px) scaleY(0.8); filter: blur(0.5px) brightness(0.7); }
+  50%  { transform: translateX(0) scaleY(1); filter: blur(0px) brightness(1); }
+  60%  { transform: translateX(6px) scaleY(1.1); filter: blur(1px) brightness(1.1); }
+  70%  { transform: translateX(-8px) scaleY(0.95); filter: blur(0.5px) brightness(0.9); }
+  80%  { transform: translateX(10px) scaleY(1.05); filter: blur(1.2px) brightness(1.2); }
+  90%  { transform: translateX(-6px) scaleY(1); filter: blur(0.5px) brightness(1); }
+  100% { transform: translateX(0) scaleY(1); filter: blur(0px) brightness(1); }
+}
+
+.glitch-animate-root {
+  animation: glitch-root-move 0.5s linear 0s 1;
+}
+@keyframes glitch-root-move {
+  0% { filter: none; transform: none; }
+  10% { filter: contrast(1.2) brightness(1.1); transform: translateX(-8px); }
+  20% { filter: contrast(0.8) brightness(1.2); transform: translateX(6px); }
+  /* ... (resto de keyframes para glitch-root-move) ... */
+  100% { filter: none; transform: none; }
+}
+
+.fadeout-glitch {
+  animation: glitch-fadeout infinite linear forwards;
+}
+@keyframes glitch-fadeout {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.5; }
 }

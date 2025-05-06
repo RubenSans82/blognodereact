@@ -38,10 +38,25 @@ function LoginPage() {
         localStorage.setItem('justLoggedIn', '1');
         console.log('Login exitoso, token, username y userId guardados.');
         
-        // Lanzar evento para mostrar el glitch globalmente
-        window.dispatchEvent(new Event('show-glitch'));
+        // Disparar evento para la animación de login en App.jsx
+        window.dispatchEvent(new Event('login-success-animation'));
+        
+        // La navegación se retrasa y se maneja en App.jsx después de la animación,
+        // pero si el modo retro no estuviera activo o no hubiera animación,
+        // se navegaría directamente aquí.
+        // Por ahora, asumimos que App.jsx escuchará y manejará la navegación post-animación.
+        // Si se quiere una navegación inmediata si no hay animación, se necesitaría lógica adicional
+        // para verificar si el modo retro está activo y si la animación se mostrará.
+        // Ejemplo de navegación inmediata (si no hubiera animación):
+        // navigate('/'); 
 
-        navigate('/'); // Redirigir a la página principal
+        // Para este ejemplo, la animación de login en App.jsx NO redirige,
+        // así que la redirección se hace aquí después de disparar el evento.
+        // Si la animación de login en App.jsx SÍ redirigiera, esta línea no sería necesaria.
+        setTimeout(() => {
+            navigate('/');
+        }, 100); // Pequeño delay para asegurar que el evento se procese antes de la navegación
+
       } else {
         // Si falta token o userId en la respuesta
         throw new Error('Respuesta de login incompleta del servidor.');
