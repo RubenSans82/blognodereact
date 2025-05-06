@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { registerUser } from '../apiClient'; // Importar registerUser
 
 function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -23,23 +24,11 @@ function RegisterPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Usar el mensaje de error del backend si está disponible
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
+      // Usar la función registerUser del apiClient
+      const data = await registerUser({ username, password });
 
       // Éxito
-      setSuccess('¡Registro exitoso! Redirigiendo a Login...');
+      setSuccess(data.message || '¡Registro exitoso! Redirigiendo a Login...');
       // Limpiar formulario (opcional)
       setUsername('');
       setPassword('');
@@ -49,7 +38,7 @@ function RegisterPage() {
 
     } catch (err) {
       console.error("Error en registro:", err);
-      setError(err.message); // Mostrar mensaje de error
+      setError(err.message || 'Ocurrió un error durante el registro.'); // Mostrar mensaje de error
     } finally {
       setLoading(false); // Detener carga
     }

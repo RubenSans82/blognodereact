@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { createPost } from '../apiClient'; // Importar createPost
 
 function CreatePostPage() {
   const [title, setTitle] = useState('');
@@ -22,43 +23,47 @@ function CreatePostPage() {
     setError(null);
     setLoading(true);
 
+    // El token ya se obtiene de localStorage y se verifica en el useEffect.
+    // Si el token no estuviera, el useEffect ya habría redirigido.
+    // Sin embargo, una comprobación adicional aquí antes de la llamada a la API es una buena práctica.
     if (!token) {
-      setError("No estás autenticado.");
+      setError("No estás autenticado. Redirigiendo a login...");
       setLoading(false);
-      navigate('/login'); // Asegurarse de redirigir si falta el token
+      navigate('/login');
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Incluir el token en la cabecera Authorization
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ title, body })
-      });
+      // Usar la función createPost del apiClient
+      // Asumimos que createPost necesita el token como argumento, además de title y body.
+      // Si createPost maneja internamente la obtención del token, se puede omitir aquí.
+      // Revisando apiClient.js, createPost toma { title, body, token }
+      const data = await createPost({ title, body, token });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Manejar errores específicos (ej. 401 No autorizado, 403 Prohibido)
-        if (response.status === 401 || response.status === 403) {
-           localStorage.removeItem('token'); // Limpiar token inválido/expirado
-           navigate('/login'); // Redirigir a login
-           throw new Error(data.message || 'Token inválido o expirado. Por favor, inicia sesión de nuevo.');
-        }
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
-
+      // Creación exitosa: apiClient ya parseó el JSON y manejó errores de red/servidor.
+      // La respuesta 'data' debería contener la información del post creado, incluyendo su ID.
       console.log('Post creado:', data);
-      // Redirigir a la página del nuevo post
-      navigate(`/post/${data.postId}`);
+      
+      // Redirigir a la página del nuevo post usando el postId de la respuesta
+      // Asegúrate de que 'data.postId' o el campo correspondiente esté presente en la respuesta de createPost
+      if (data && data.postId) {
+        navigate(`/post/${data.postId}`);
+      } else {
+        // Esto podría indicar un problema con la respuesta de la API que apiClient no capturó como error HTTP.
+        throw new Error('Respuesta de creación de post incompleta del servidor.');
+      }
 
     } catch (err) {
       console.error('Error creando post:', err);
-      setError(err.message);
+      // Si el error es por token inválido/expirado, apiClient.js (idealmente) ya debería haber limpiado el token.
+      // Y si el error tiene una propiedad `isAuthError` (o similar) puesta por apiClient, podríamos actuar en consecuencia.
+      if (err.message.includes("Token inválido") || err.message.includes("401") || err.message.includes("403")) {
+        localStorage.removeItem('token'); // Asegurarse de limpiar el token
+        navigate('/login'); // Redirigir a login
+        setError('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.');
+      } else {
+        setError(err.message || 'Ocurrió un error al crear el post.');
+      }
     } finally {
       setLoading(false);
     }

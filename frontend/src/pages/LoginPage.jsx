@@ -1,72 +1,48 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../apiClient'; // Ruta corregida
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Estado de carga
-  const navigate = useNavigate(); // Hook para navegación
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true); // Iniciar carga
+    setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      // Usar la función loginUser del apiClient
+      const data = await loginUser({ username, password });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Usar mensaje de error del backend
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
-
-      // Login exitoso: guardar token, username y userId
-      if (data.token && data.userId) { // Asegurarse que userId viene en la respuesta
+      // Login exitoso: apiClient ya parseó el JSON y manejó errores de red.
+      // El token y userId deberían estar en 'data' directamente.
+      if (data && data.token && data.userId) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('username', username);
+        localStorage.setItem('username', username); // El backend podría devolver el username también
         localStorage.setItem('userId', data.userId.toString());
-        // Flag para mostrar glitch en HomePage
         localStorage.setItem('justLoggedIn', '1');
         console.log('Login exitoso, token, username y userId guardados.');
         
-        // Disparar evento para la animación de login en App.jsx
         window.dispatchEvent(new Event('login-success-animation'));
         
-        // La navegación se retrasa y se maneja en App.jsx después de la animación,
-        // pero si el modo retro no estuviera activo o no hubiera animación,
-        // se navegaría directamente aquí.
-        // Por ahora, asumimos que App.jsx escuchará y manejará la navegación post-animación.
-        // Si se quiere una navegación inmediata si no hay animación, se necesitaría lógica adicional
-        // para verificar si el modo retro está activo y si la animación se mostrará.
-        // Ejemplo de navegación inmediata (si no hubiera animación):
-        // navigate('/'); 
-
-        // Para este ejemplo, la animación de login en App.jsx NO redirige,
-        // así que la redirección se hace aquí después de disparar el evento.
-        // Si la animación de login en App.jsx SÍ redirigiera, esta línea no sería necesaria.
         setTimeout(() => {
             navigate('/');
-        }, 100); // Pequeño delay para asegurar que el evento se procese antes de la navegación
+        }, 100);
 
       } else {
-        // Si falta token o userId en la respuesta
-        throw new Error('Respuesta de login incompleta del servidor.');
+        // Si falta token o userId en la respuesta (aunque apiClient debería haber lanzado un error si la respuesta no fue ok)
+        throw new Error(data.message || 'Respuesta de login incompleta del servidor.');
       }
 
     } catch (err) {
       console.error("Error en login:", err);
       setError(err.message); // Mostrar error al usuario
     } finally {
-      setLoading(false); // Detener carga
+      setLoading(false);
     }
   };
 
@@ -103,7 +79,7 @@ function LoginPage() {
         </div>
         {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
         <button type="submit" disabled={loading} style={{ display: 'block', width: '100%' }}> {/* Botón ancho completo */}
-          {loading ? 'Entrando...' : 'Entrar'}
+          {loading ? 'Iniciando sesión...' : 'Login'}
         </button>
       </form>
     </div>
