@@ -1,28 +1,26 @@
+require('dotenv').config(); // Cargar variables de entorno desde .env
+
 const express = require('express');
-const mysql = require('mysql2/promise'); // Usar la versión con promesas para async/await
+const { Pool } = require('pg'); // Cambiado de mysql2/promise a pg
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = process.env.PORT || 3001;
-const JWT_SECRET = 'tu_secreto_jwt_muy_seguro'; // ¡Cambia esto por algo seguro y guárdalo fuera del código!
-const SALT_ROUNDS = 10; // Coste para bcrypt
+const JWT_SECRET = process.env.JWT_SECRET || 'tu_secreto_jwt_muy_seguro'; // Usar variable de entorno
+const SALT_ROUNDS = 10;
 
 // --- Middlewares ---
 app.use(cors());
 app.use(express.json());
 
-// --- Conexión a la Base de Datos (Pool) ---
-// Usar un pool es mejor para manejar múltiples conexiones
-const dbPool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'blog_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+// --- Conexión a la Base de Datos (Pool para PostgreSQL) ---
+// Render proporciona DATABASE_URL. Para desarrollo local, puedes configurarla.
+const dbPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // Si DATABASE_URL incluye sslmode=require (común en Render), necesitas esto:
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
 // Middleware simple para verificar JWT (proteger rutas)
@@ -39,7 +37,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-
 // --- Rutas de Autenticación ---
 
 // Registro de usuario
@@ -52,18 +49,21 @@ app.post('/api/auth/register', async (req, res) => {
 
   try {
     // Verificar si el usuario ya existe
-    const [existingUsers] = await dbPool.query('SELECT id FROM users WHERE username = ?', [username]);
-    if (existingUsers.length > 0) {
+    const existingUsersResult = await dbPool.query('SELECT id FROM users WHERE username = $1', [username]);
+    if (existingUsersResult.rows.length > 0) {
       return res.status(409).json({ message: 'El nombre de usuario ya existe.' });
     }
 
     // Hashear contraseña
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
-    // Insertar usuario
-    const [result] = await dbPool.query('INSERT INTO users (username, password_hash) VALUES (?, ?)', [username, passwordHash]);
+    // Insertar usuario y devolver el ID
+    const result = await dbPool.query(
+      'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id',
+      [username, passwordHash]
+    );
 
-    res.status(201).json({ message: 'Usuario registrado con éxito.', userId: result.insertId });
+    res.status(201).json({ message: 'Usuario registrado con éxito.', userId: result.rows[0].id });
 
   } catch (error) {
     console.error('Error en registro:', error);
@@ -86,15 +86,14 @@ app.post('/api/auth/login', async (req, res) => {
   try {
     // Buscar usuario
     console.log(`Buscando usuario: "${username}" en la base de datos.`);
-    const [users] = await dbPool.query('SELECT id, username, password_hash FROM users WHERE username = ?', [username]);
+    const usersResult = await dbPool.query('SELECT id, username, password_hash FROM users WHERE username = $1', [username]);
 
-    if (users.length === 0) {
+    if (usersResult.rows.length === 0) {
       console.log(`Login fallido: Usuario "${username}" no encontrado.`);
-      // Es importante devolver 401 aquí también para no revelar si el usuario existe o no
       return res.status(401).json({ message: 'Credenciales inválidas.' });
     }
 
-    const user = users[0];
+    const user = usersResult.rows[0];
     console.log(`Usuario encontrado: ID=${user.id}, Username=${user.username}`);
 
     // Log 2: Ver la contraseña recibida y el hash almacenado ANTES de comparar
@@ -115,11 +114,10 @@ app.post('/api/auth/login', async (req, res) => {
 
     // Generar JWT
     const payload = { userId: user.id, username: user.username };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }); // Token expira en 1 hora
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
 
     console.log(`Login exitoso para "${username}". Token generado.`);
     console.log('--- Fin Petición Login ---');
-    // Añadir userId a la respuesta JSON
     res.json({ message: 'Login exitoso.', token: token, userId: user.id });
 
   } catch (error) {
@@ -129,20 +127,18 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-
 // --- Rutas de Posts ---
 
 // Obtener todos los posts (público)
 app.get('/api/posts', async (req, res) => {
   try {
-    // Obtener posts, el nombre de usuario del autor y el user_id del post
-    const [posts] = await dbPool.query(`
+    const postsResult = await dbPool.query(`
       SELECT p.id, p.title, p.body, p.created_at, u.username, p.user_id
       FROM posts p
       JOIN users u ON p.user_id = u.id
       ORDER BY p.created_at DESC
     `);
-    res.json(posts);
+    res.json(postsResult.rows);
   } catch (error) {
     console.error('Error obteniendo posts:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
@@ -153,17 +149,17 @@ app.get('/api/posts', async (req, res) => {
 app.get('/api/posts/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const [posts] = await dbPool.query(`
+    const postsResult = await dbPool.query(`
       SELECT p.id, p.title, p.body, p.created_at, u.username
       FROM posts p
       JOIN users u ON p.user_id = u.id
-      WHERE p.id = ?
+      WHERE p.id = $1
     `, [id]);
 
-    if (posts.length === 0) {
+    if (postsResult.rows.length === 0) {
       return res.status(404).json({ message: 'Post no encontrado.' });
     }
-    res.json(posts[0]);
+    res.json(postsResult.rows[0]);
   } catch (error) {
     console.error('Error obteniendo post por ID:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
@@ -173,15 +169,18 @@ app.get('/api/posts/:id', async (req, res) => {
 // Crear un nuevo post (protegido por JWT)
 app.post('/api/posts', authenticateToken, async (req, res) => {
   const { title, body } = req.body;
-  const userId = req.user.userId; // Obtenido del token verificado
+  const userId = req.user.userId;
 
   if (!title || !body) {
     return res.status(400).json({ message: 'Título y cuerpo son requeridos.' });
   }
 
   try {
-    const [result] = await dbPool.query('INSERT INTO posts (title, body, user_id) VALUES (?, ?, ?)', [title, body, userId]);
-    res.status(201).json({ message: 'Post creado con éxito.', postId: result.insertId });
+    const result = await dbPool.query(
+      'INSERT INTO posts (title, body, user_id) VALUES ($1, $2, $3) RETURNING id',
+      [title, body, userId]
+    );
+    res.status(201).json({ message: 'Post creado con éxito.', postId: result.rows[0].id });
   } catch (error) {
     console.error('Error creando post:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
@@ -191,33 +190,29 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
 // Borrar un post (protegido por JWT y verificación de autoría)
 app.delete('/api/posts/:id', authenticateToken, async (req, res) => {
   const postId = req.params.id;
-  const userId = req.user.userId; // ID del usuario autenticado
+  const userId = req.user.userId;
 
   try {
-    // 1. Verificar que el post existe y obtener su user_id
-    const [posts] = await dbPool.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
+    const postCheckResult = await dbPool.query('SELECT user_id FROM posts WHERE id = $1', [postId]);
 
-    if (posts.length === 0) {
+    if (postCheckResult.rows.length === 0) {
       return res.status(404).json({ message: 'Post no encontrado.' });
     }
 
-    const postUserId = posts[0].user_id;
+    const postUserId = postCheckResult.rows[0].user_id;
 
-    // 2. Verificar si el usuario autenticado es el autor del post
     if (postUserId !== userId) {
-      return res.status(403).json({ message: 'No autorizado para borrar este post.' }); // 403 Forbidden
+      return res.status(403).json({ message: 'No autorizado para borrar este post.' });
     }
 
-    // 3. Si es el autor, proceder a borrar
-    const [result] = await dbPool.query('DELETE FROM posts WHERE id = ?', [postId]);
+    const deleteResult = await dbPool.query('DELETE FROM posts WHERE id = $1', [postId]);
 
-    if (result.affectedRows === 0) {
-      // Esto no debería pasar si la verificación anterior funcionó, pero es una comprobación extra
-      return res.status(404).json({ message: 'Post no encontrado para borrar.' });
+    if (deleteResult.rowCount === 0) {
+      return res.status(404).json({ message: 'Post no encontrado para borrar (esto no debería ocurrir si la comprobación anterior fue exitosa).' });
     }
 
     console.log(`Post ${postId} borrado por usuario ${userId}`);
-    res.status(200).json({ message: 'Post borrado con éxito.' }); // O res.sendStatus(204) si no quieres enviar cuerpo
+    res.status(200).json({ message: 'Post borrado con éxito.' });
 
   } catch (error) {
     console.error(`Error borrando post ${postId}:`, error);
@@ -225,21 +220,18 @@ app.delete('/api/posts/:id', authenticateToken, async (req, res) => {
   }
 });
 
-
 // --- Iniciar Servidor ---
-// Usar una función async para asegurar que el pool esté listo (opcional pero buena práctica)
 async function startServer() {
   try {
-    // Probar conexión al pool (opcional)
-    await dbPool.query('SELECT 1');
-    console.log('Conectado a la base de datos MySQL (Pool).');
+    await dbPool.query('SELECT 1'); // Probar conexión
+    console.log('Conectado a la base de datos PostgreSQL (Pool).');
 
     app.listen(port, () => {
       console.log(`Servidor backend escuchando en http://localhost:${port}`);
     });
   } catch (error) {
     console.error('Error al iniciar el servidor o conectar a la DB:', error);
-    process.exit(1); // Salir si no se puede conectar a la DB
+    process.exit(1);
   }
 }
 
