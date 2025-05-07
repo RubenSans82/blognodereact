@@ -220,6 +220,38 @@ app.delete('/api/posts/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// Actualizar un post (protegido por JWT y verificación de autoría)
+app.put('/api/posts/:id', authenticateToken, async (req, res) => {
+  const postId = req.params.id;
+  const { title, body } = req.body;
+  const userId = req.user.userId;
+
+  if (!title || !body) {
+    return res.status(400).json({ message: 'Título y cuerpo son requeridos.' });
+  }
+
+  try {
+    // Verificar autoría
+    const postCheckResult = await dbPool.query('SELECT user_id FROM posts WHERE id = $1', [postId]);
+    if (postCheckResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Post no encontrado.' });
+    }
+    if (postCheckResult.rows[0].user_id !== userId) {
+      return res.status(403).json({ message: 'No autorizado para editar este post.' });
+    }
+
+    // Actualizar post
+    await dbPool.query(
+      'UPDATE posts SET title = $1, body = $2 WHERE id = $3',
+      [title, body, postId]
+    );
+    res.json({ message: 'Post actualizado con éxito.' });
+  } catch (error) {
+    console.error('Error actualizando post:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+
 // --- Iniciar Servidor ---
 async function startServer() {
   try {

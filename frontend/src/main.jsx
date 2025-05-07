@@ -7,6 +7,7 @@ import PostPage from './pages/PostPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import CreatePostPage from './pages/CreatePostPage.jsx';
+import EditPostPage from './pages/EditPostPage.jsx';
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="register" element={<RegisterPage />} />
           <Route path="create" element={<CreatePostPage />} /> {/* Ruta para crear post */}
           <Route path="post/:id" element={<PostPage />} /> {/* Ruta para post individual */}
+          <Route path="edit-post/:id" element={<EditPostPage />} />
           {/* Puedes añadir una ruta para página no encontrada (404) aquí si quieres */}
           {/* <Route path="*" element={<NotFoundPage />} /> */}
         </Route>
