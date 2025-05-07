@@ -46,13 +46,20 @@ function RegisterPage() {
 
   return (
     // Contenedor principal: define el ancho y centra el bloque
-    <div style={{ maxWidth: '400px', margin: '2rem auto 0 auto', padding: '0 1rem' }}>
+    <div
+      style={{
+        maxWidth: '400px',
+        margin: '2rem auto 0 auto',
+        padding: '0 1rem',
+        paddingTop: '6rem', // Espacio para la navbar en móvil
+      }}
+    >
       {/* Título: Asegurar alineación izquierda */}
-      <h1 style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Registro</h1>
+      <h1 style={{ textAlign: 'left', marginBottom: '1.5rem', textShadow: '1px 1px 2px #000' }}>Registro</h1>
       {/* Formulario: Asegurar alineación izquierda */}
       <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
         <div>
-          <label htmlFor="username">Usuario:</label>
+          <label htmlFor="username" style={{ textShadow: '1px 1px 2px #000' }}>Usuario:</label>
           <input
             type="text"
             id="username"
@@ -64,7 +71,7 @@ function RegisterPage() {
           />
         </div>
         <div>
-          <label htmlFor="password">Contraseña:</label>
+          <label htmlFor="password" style={{ textShadow: '1px 1px 2px #000' }}>Contraseña:</label>
           <input
             type="password"
             id="password"
@@ -76,7 +83,7 @@ function RegisterPage() {
           />
         </div>
         <div>
-          <label htmlFor="confirmPassword">Confirmar Contraseña:</label>
+          <label htmlFor="confirmPassword" style={{ textShadow: '1px 1px 2px #000' }}>Confirmar Contraseña:</label>
           <input
             type="password"
             id="confirmPassword"

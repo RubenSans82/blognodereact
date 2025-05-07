@@ -48,13 +48,20 @@ function LoginPage() {
 
   return (
     // Contenedor principal: define el ancho y centra el bloque
-    <div style={{ maxWidth: '400px', margin: '2rem auto 0 auto', padding: '0 1rem' }}>
+    <div
+      style={{
+        maxWidth: '400px',
+        margin: '2rem auto 0 auto',
+        padding: '0 1rem',
+        paddingTop: '6rem', // Espacio para la navbar en móvil
+      }}
+    >
       {/* Título: Asegurar alineación izquierda (por defecto en h1) */}
-      <h1 style={{ textAlign: 'left', marginBottom: '1.5rem' }}>Login</h1>
+      <h1 style={{ textAlign: 'left', marginBottom: '1.5rem', textShadow: '1px 1px 2px #000' }}>Login</h1>
       {/* Formulario: Asegurar alineación izquierda (por defecto en form) */}
       <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
         <div>
-          <label htmlFor="username">Usuario:</label>
+          <label htmlFor="username" style={{ textShadow: '1px 1px 2px #000' }}>Usuario:</label>
           <input
             type="text"
             id="username"
@@ -66,7 +73,7 @@ function LoginPage() {
           />
         </div>
         <div>
-          <label htmlFor="password">Contraseña:</label>
+          <label htmlFor="password" style={{ textShadow: '1px 1px 2px #000' }}>Contraseña:</label>
           <input
             type="password"
             id="password"

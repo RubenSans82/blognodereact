@@ -266,3 +266,43 @@ main {
     padding-bottom: 4rem !important;
   }
 }
+
+@media (max-width: 800px) {
+  /* Mejorar botones login/registro solo cuando NO está logueado */
+  .navbar-menu:not(.logged-in) .nav-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 0 0;
+    padding: 0;
+  }
+  .navbar-menu:not(.logged-in) .nav-links {
+    width: 90%;
+    margin: 0.2rem auto;
+    border: 2px solid var(--primary-color);
+    background: #e100ff;
+    color: #fff;
+    border: 2px solid #00f6ff;
+    box-shadow: 0 2px 12px 0 rgba(0,246,255,0.18);
+    border-radius: 0.4em;
+    padding: 0.9em 0;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    box-shadow: 0 2px 12px 0 rgba(0,255,255,0.18);
+    transition: background 0.15s, color 0.15s, border 0.15s;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .navbar-menu:not(.logged-in) .nav-links:hover {
+    background: #00f6ff;
+    color: #e100ff;
+    border-color: #e100ff;
+  }
+  .navbar-menu:not(.logged-in) {
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-bottom: 2.5rem !important;
+    padding-top: 5rem !important;
+  }
+}

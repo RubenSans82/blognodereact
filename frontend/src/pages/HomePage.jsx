@@ -11,6 +11,7 @@ function HomePage() {
   const listRef = useRef(null);
   const navigate = useNavigate();
   const loggedInUserId = localStorage.getItem('userId');
+  const isLoggedIn = !!localStorage.getItem('token');
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -88,6 +89,12 @@ function HomePage() {
     setShowModal(false);
     setPostToDelete(null);
   };
+
+  // Redirigir a login si no está loggeado
+  if (!isLoggedIn) {
+    navigate('/login');
+    return null;
+  }
 
   if (loading) return <p>Cargando posts...</p>;
   if (error) return <p>Error al cargar posts: {error}</p>;

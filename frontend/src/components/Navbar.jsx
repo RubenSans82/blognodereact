@@ -92,7 +92,7 @@ function Navbar() {
           <span className="pixel-bar"></span>
         </span>
       </button>
-      <ul className={`navbar-menu${menuOpen ? ' open' : ''}`}>
+      <ul className={`navbar-menu${menuOpen ? ' open' : ''}${isLoggedIn ? ' logged-in' : ''}`}>
         <li className="navbar-menu-spacer"></li>
         {/* Logo solo en escritorio */}
         <li className="navbar-logo-li">
@@ -100,9 +100,12 @@ function Navbar() {
             <img src={logo} className="logo" alt="Blog logo" />
           </Link>
         </li>
-        <li className="nav-item">
-          <Link to="/" className="nav-links">Inicio</Link>
-        </li>
+        {/* Mostrar botón Inicio solo si está loggeado y no en login/register */}
+        {isLoggedIn && location.pathname !== '/login' && location.pathname !== '/register' && (
+          <li className="nav-item">
+            <Link to="/" className="nav-links">Inicio</Link>
+          </li>
+        )}
         {isLoggedIn ? (
           <>
             <li className="nav-item">
@@ -121,7 +124,7 @@ function Navbar() {
               <Link to="/login" className="nav-links">Login</Link>
             </li>
             <li className="nav-item">
-              <Link to="/register" className="nav-links">Register</Link>
+              <Link to="/register" className="nav-links">Registro</Link>
             </li>
           </>
         )}
