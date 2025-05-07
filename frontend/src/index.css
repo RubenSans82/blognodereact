@@ -379,7 +379,7 @@ body { /* Estilos del body que aplican siempre */
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;
-  background-image: url('/fondo.png');
+  background-image: url('/fondo.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -831,4 +831,14 @@ body.retro-active .navbar-container .navbar-logo img.logo:hover {
 @keyframes glitch-fadeout {
   0% { opacity: 0.5; }
   50% { opacity: 0.5; }
+}
+
+body.login-bg {
+  background: url('/fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.main-bg {
+  background: url('/fondo2.png') no-repeat center center fixed;
+  background-size: cover;
 }

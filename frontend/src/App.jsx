@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import './App.css';
 
@@ -8,6 +8,7 @@ function App() {
   const [showLoginAnimation, setShowLoginAnimation] = useState(false);
   const [showLogoutAnimation, setShowLogoutAnimation] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleShowGlitch = () => setShowGlitch(true);
@@ -41,6 +42,21 @@ function App() {
       window.removeEventListener('trigger-logout-animation', handleTriggerLogoutAnimation);
     };
   }, [navigate]);
+
+  useEffect(() => {
+    if (location.pathname === '/login') {
+      document.body.classList.add('login-bg');
+      document.body.classList.remove('main-bg');
+    } else {
+      document.body.classList.add('main-bg');
+      document.body.classList.remove('login-bg');
+    }
+    // Limpieza al desmontar
+    return () => {
+      document.body.classList.remove('login-bg');
+      document.body.classList.remove('main-bg');
+    };
+  }, [location.pathname]);
 
   return (
     <>
