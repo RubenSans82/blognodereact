@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Importar componentes de react-router-dom
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App.jsx' // App será ahora el layout principal
 import HomePage from './pages/HomePage.jsx';
 import PostPage from './pages/PostPage.jsx';
