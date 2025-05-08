@@ -281,7 +281,7 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
     const outputPath = path.join(uploadsDir, outputFilename);
     // Procesar imagen: reducir tamaño y colores para efecto pixel art
     await sharp(file.path)
-      .resize(96, 96, { fit: 'inside' }) // tamaño pequeño
+      .resize(250, 250, { fit: 'inside' }) // tamaño aumentado a 250x250
       .png({ colors: 16 }) // paleta limitada
       .toFile(outputPath);
     // Eliminar archivo temporal
