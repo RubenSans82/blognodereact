@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPostById, updatePost } from '../apiClient';
+import { getPostById, updatePost, uploadImage } from '../apiClient';
 
 function EditPostPage() {
   const { id } = useParams();
@@ -10,6 +10,9 @@ function EditPostPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [newImageFile, setNewImageFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -19,6 +22,7 @@ function EditPostPage() {
         const data = await getPostById(id);
         setTitle(data.title);
         setBody(data.body);
+        setImageUrl(data.image_url || '');
       } catch (err) {
         setError('No se pudo cargar el post.');
       } finally {
@@ -28,15 +32,29 @@ function EditPostPage() {
     fetchPost();
   }, [id]);
 
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewImageFile(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError(null);
+    let finalImageUrl = imageUrl;
     try {
-      await updatePost(id, { title, body });
+      if (newImageFile) {
+        setUploading(true);
+        const uploadResult = await uploadImage(newImageFile);
+        finalImageUrl = uploadResult.url;
+        setUploading(false);
+      }
+      await updatePost(id, { title, body, image_url: finalImageUrl });
       navigate(`/post/${id}`);
     } catch (err) {
       setError('No se pudo guardar el post.');
+      setUploading(false);
     } finally {
       setSaving(false);
     }
@@ -72,6 +90,19 @@ function EditPostPage() {
             disabled={saving}
             style={{ width: '100%', marginBottom: '1rem' }}
           />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Imagen actual:</label><br />
+          {imageUrl ? (
+            <img src={imageUrl.startsWith('http') ? imageUrl : `https://apiblog-n914.onrender.com${imageUrl}`} alt="Imagen del post" style={{ maxWidth: '100%', maxHeight: 200 }} />
+          ) : (
+            <span>No hay imagen</span>
+          )}
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <label htmlFor="image">Nueva imagen (opcional):</label>
+          <input type="file" id="image" accept="image/*" onChange={handleImageChange} disabled={saving || uploading} />
+          {uploading && <span> Subiendo imagen...</span>}
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <button type="submit" disabled={saving}>{saving ? 'Guardando...' : 'Guardar Cambios'}</button>
