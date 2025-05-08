@@ -1,4 +1,11 @@
 require('dotenv').config(); // Cargar variables de entorno desde .env
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const express = require('express');
 const { Pool } = require('pg'); // Cambiado de mysql2/promise a pg
@@ -283,6 +290,27 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
     res.json({ url: `/uploads/${outputFilename}` });
   } catch (err) {
     res.status(500).json({ error: 'Error procesando la imagen', details: err.message });
+  }
+});
+
+// Cambia la ruta de subida de imagen para usar Cloudinary
+app.post('/api/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No se subió ningún archivo.' });
+    }
+    // Sube la imagen a Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'blog',
+      resource_type: 'image',
+    });
+    // Elimina el archivo temporal local si lo deseas
+    const fs = require('fs');
+    fs.unlink(req.file.path, () => {});
+    // Devuelve la URL segura de Cloudinary
+    res.json({ url: result.secure_url });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al subir la imagen a Cloudinary.' });
   }
 });
 
