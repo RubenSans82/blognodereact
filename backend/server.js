@@ -282,7 +282,7 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
     // Procesar imagen: reducir tamaño y colores para efecto pixel art
     await sharp(file.path)
       .resize(250, 250, { fit: 'inside' }) // tamaño aumentado a 250x250
-      .png({ colors: 12 }) // paleta limitada
+      .png({ colors: 10 }) // paleta limitada
       .toFile(outputPath);
     // Eliminar archivo temporal
     fs.unlinkSync(file.path);
