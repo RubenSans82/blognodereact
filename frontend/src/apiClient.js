@@ -72,7 +72,7 @@ export const uploadImage = async (file) => {
   const token = localStorage.getItem('token');
   const formData = new FormData();
   formData.append('image', file);
-  const response = await fetch(`${BASE_URL}/upload-image`, {
+  const response = await fetch(`${BASE_URL}/upload`, { // Cambiado a /upload para Cloudinary
     method: 'POST',
     headers: token ? { 'Authorization': `Bearer ${token}` } : {},
     body: formData,
