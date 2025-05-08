@@ -37,6 +37,15 @@ function PostPage() {
       <h1>{post.title}</h1>
       <div className="post-content-wrapper">
         <p>Por: {post.username} el {new Date(post.created_at).toLocaleDateString()}</p>
+        {post.image_url && (
+          <div style={{ margin: '1rem 0' }}>
+            <img
+              src={post.image_url.startsWith('http') ? post.image_url : `https://apiblog-n914.onrender.com${post.image_url}`}
+              alt="Imagen del post"
+              style={{ maxWidth: 350, border: '2px solid #e100ff', boxShadow: '0 0 8px #00f6ff' }}
+            />
+          </div>
+        )}
         <div style={{ whiteSpace: 'pre-wrap' }}>{post.body}</div>
       </div>
     </>
