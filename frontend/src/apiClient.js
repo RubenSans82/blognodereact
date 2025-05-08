@@ -67,6 +67,23 @@ export const deletePost = (postId) => request(`/posts/${postId}`, {
   method: 'DELETE',
 });
 
+// Subida de imagen al backend
+export const uploadImage = async (file) => {
+  const token = localStorage.getItem('token');
+  const formData = new FormData();
+  formData.append('image', file);
+  const response = await fetch(`${BASE_URL}/upload-image`, {
+    method: 'POST',
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    body: formData,
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: response.statusText }));
+    throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+  }
+  return await response.json();
+};
+
 // Puedes añadir más funciones aquí para comentarios, usuarios, etc.
 // Ejemplo:
 // export const getCommentsByPostId = (postId) => request(`/posts/${postId}/comments`);

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
-import { createPost } from '../apiClient'; // Importar createPost
+import { createPost, uploadImage } from '../apiClient'; // Importar createPost y uploadImage
 
 function CreatePostPage() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token'); // Obtener token
 
@@ -18,52 +20,46 @@ function CreatePostPage() {
     }
   }, [token, navigate]); // Dependencias: token y navigate
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
-    // El token ya se obtiene de localStorage y se verifica en el useEffect.
-    // Si el token no estuviera, el useEffect ya habría redirigido.
-    // Sin embargo, una comprobación adicional aquí antes de la llamada a la API es una buena práctica.
+    if (!imageFile) {
+      setError('Debes seleccionar una imagen.');
+      setLoading(false);
+      return;
+    }
     if (!token) {
       setError("No estás autenticado. Redirigiendo a login...");
       setLoading(false);
       navigate('/login');
       return;
     }
-
     try {
-      // Usar la función createPost del apiClient
-      // Asumimos que createPost necesita el token como argumento, además de title y body.
-      // Si createPost maneja internamente la obtención del token, se puede omitir aquí.
-      // Revisando apiClient.js, createPost toma { title, body, token }
-      const data = await createPost({ title, body, token });
-
-      // Creación exitosa: apiClient ya parseó el JSON y manejó errores de red/servidor.
-      // La respuesta 'data' debería contener la información del post creado, incluyendo su ID.
-      console.log('Post creado:', data);
-      
-      // Redirigir a la página del nuevo post usando el postId de la respuesta
-      // Asegúrate de que 'data.postId' o el campo correspondiente esté presente en la respuesta de createPost
+      // Subir imagen primero
+      const imgRes = await uploadImage(imageFile);
+      if (!imgRes.url) throw new Error('No se pudo procesar la imagen.');
+      // Crear post con la URL de la imagen
+      const data = await createPost({ title, body, image_url: imgRes.url, token });
       if (data && data.postId) {
         navigate(`/post/${data.postId}`);
       } else {
-        // Esto podría indicar un problema con la respuesta de la API que apiClient no capturó como error HTTP.
         throw new Error('Respuesta de creación de post incompleta del servidor.');
       }
-
     } catch (err) {
-      console.error('Error creando post:', err);
-      // Si el error es por token inválido/expirado, apiClient.js (idealmente) ya debería haber limpiado el token.
-      // Y si el error tiene una propiedad `isAuthError` (o similar) puesta por apiClient, podríamos actuar en consecuencia.
-      if (err.message.includes("Token inválido") || err.message.includes("401") || err.message.includes("403")) {
-        localStorage.removeItem('token'); // Asegurarse de limpiar el token
-        navigate('/login'); // Redirigir a login
-        setError('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.');
-      } else {
-        setError(err.message || 'Ocurrió un error al crear el post.');
-      }
+      setError(err.message || 'Ocurrió un error al crear el post.');
     } finally {
       setLoading(false);
     }
@@ -90,7 +86,6 @@ function CreatePostPage() {
             onChange={(e) => setTitle(e.target.value)}
             required
             disabled={loading}
-            // Quitar style inline
           />
         </div>
         <div>
@@ -102,11 +97,27 @@ function CreatePostPage() {
             required
             rows="10"
             disabled={loading}
-             // Quitar style inline
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Mantener estilo de error por ahora */}
-        <button type="submit" disabled={loading}> {/* Quitar style inline */}
+        <div>
+          <label htmlFor="image">Imagen (obligatoria):</label>
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            disabled={loading}
+            required
+          />
+        </div>
+        {imagePreview && (
+          <div style={{ margin: '1rem 0' }}>
+            <p>Previsualización:</p>
+            <img src={imagePreview} alt="Previsualización" style={{ maxWidth: 200, border: '2px solid #e100ff', boxShadow: '0 0 8px #00f6ff' }} />
+          </div>
+        )}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <button type="submit" disabled={loading}>
           {loading ? 'Publicando...' : 'Publicar Post'}
         </button>
       </form>

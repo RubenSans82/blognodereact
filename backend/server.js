@@ -5,6 +5,10 @@ const { Pool } = require('pg'); // Cambiado de mysql2/promise a pg
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -36,6 +40,15 @@ const authenticateToken = (req, res, next) => {
     next(); // Pasa al siguiente middleware o ruta
   });
 };
+
+// Configuración de Multer para guardar archivos temporalmente
+const upload = multer({ dest: 'uploads/tmp/' });
+
+// Asegura que la carpeta de uploads existe
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // --- Rutas de Autenticación ---
 
@@ -133,7 +146,7 @@ app.post('/api/auth/login', async (req, res) => {
 app.get('/api/posts', async (req, res) => {
   try {
     const postsResult = await dbPool.query(`
-      SELECT p.id, p.title, p.body, p.created_at, u.username, p.user_id
+      SELECT p.id, p.title, p.body, p.created_at, u.username, p.user_id, p.image_url
       FROM posts p
       JOIN users u ON p.user_id = u.id
       ORDER BY p.created_at DESC
@@ -150,7 +163,7 @@ app.get('/api/posts/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const postsResult = await dbPool.query(`
-      SELECT p.id, p.title, p.body, p.created_at, u.username
+      SELECT p.id, p.title, p.body, p.created_at, u.username, p.image_url
       FROM posts p
       JOIN users u ON p.user_id = u.id
       WHERE p.id = $1
@@ -168,7 +181,7 @@ app.get('/api/posts/:id', async (req, res) => {
 
 // Crear un nuevo post (protegido por JWT)
 app.post('/api/posts', authenticateToken, async (req, res) => {
-  const { title, body } = req.body;
+  const { title, body, image_url } = req.body;
   const userId = req.user.userId;
 
   if (!title || !body) {
@@ -177,8 +190,8 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
 
   try {
     const result = await dbPool.query(
-      'INSERT INTO posts (title, body, user_id) VALUES ($1, $2, $3) RETURNING id',
-      [title, body, userId]
+      'INSERT INTO posts (title, body, user_id, image_url) VALUES ($1, $2, $3, $4) RETURNING id',
+      [title, body, userId, image_url || null]
     );
     res.status(201).json({ message: 'Post creado con éxito.', postId: result.rows[0].id });
   } catch (error) {
@@ -223,7 +236,7 @@ app.delete('/api/posts/:id', authenticateToken, async (req, res) => {
 // Actualizar un post (protegido por JWT y verificación de autoría)
 app.put('/api/posts/:id', authenticateToken, async (req, res) => {
   const postId = req.params.id;
-  const { title, body } = req.body;
+  const { title, body, image_url } = req.body;
   const userId = req.user.userId;
 
   if (!title || !body) {
@@ -240,10 +253,10 @@ app.put('/api/posts/:id', authenticateToken, async (req, res) => {
       return res.status(403).json({ message: 'No autorizado para editar este post.' });
     }
 
-    // Actualizar post
+    // Actualizar post (incluyendo image_url)
     await dbPool.query(
-      'UPDATE posts SET title = $1, body = $2 WHERE id = $3',
-      [title, body, postId]
+      'UPDATE posts SET title = $1, body = $2, image_url = $3 WHERE id = $4',
+      [title, body, image_url || null, postId]
     );
     res.json({ message: 'Post actualizado con éxito.' });
   } catch (error) {
@@ -251,6 +264,30 @@ app.put('/api/posts/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });
+
+// Ruta para subir y procesar imagen a estilo pixel art retro
+app.post('/api/upload-image', upload.single('image'), async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: 'No se subió ninguna imagen' });
+    const outputFilename = `retro_${Date.now()}.png`;
+    const outputPath = path.join(uploadsDir, outputFilename);
+    // Procesar imagen: reducir tamaño y colores para efecto pixel art
+    await sharp(file.path)
+      .resize(96, 96, { fit: 'inside' }) // tamaño pequeño
+      .png({ colors: 16 }) // paleta limitada
+      .toFile(outputPath);
+    // Eliminar archivo temporal
+    fs.unlinkSync(file.path);
+    // Devolver la URL de la imagen procesada
+    res.json({ url: `/uploads/${outputFilename}` });
+  } catch (err) {
+    res.status(500).json({ error: 'Error procesando la imagen', details: err.message });
+  }
+});
+
+// Servir archivos estáticos de uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- Iniciar Servidor ---
 async function startServer() {
