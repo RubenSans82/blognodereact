@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import Typewriter from '../components/Typewriter'; // Importamos el componente Typewriter
 
 function LandingPage() {
+  const navigate = useNavigate(); // Hook para la navegación
   const welcomeText = "Bienvenido a Retro Post. Crea, comparte y revive la nostalgia.";
 
   return (
@@ -29,14 +31,13 @@ function LandingPage() {
           minHeight: '100px' // Para evitar saltos de layout mientras escribe
         }}
       />
-      {/* Podrías añadir un botón o enlace aquí si lo deseas, por ejemplo:
+      {/* Podrías añadir un botón o enlace aquí si lo deseas, por ejemplo: */}
       <button 
         onClick={() => navigate('/login')} 
-        style={{ marginTop: '2rem', padding: '10px 20px', fontSize: '1em' }}
+        style={{ marginTop: '2rem', padding: '10px 20px', fontSize: '1em', cursor: 'pointer', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', textShadow: '1px 1px 2px #000' }}
       >
         Comenzar
       </button>
-      */}
     </div>
   );
 }

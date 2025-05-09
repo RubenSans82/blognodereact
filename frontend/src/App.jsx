@@ -60,7 +60,7 @@ function App() {
 
   return (
     <>
-      {showGlitch && (
+      {showGlitch && !['/', '/login', '/register', '/landing'].includes(location.pathname) && (
         <div className="glitch-overlay glitch-fade">
           {[...Array(64)].map((_, i) => (
             <div key={i} className="glitch-line" style={{ top: `${i * 1.5625}%` }}></div>
