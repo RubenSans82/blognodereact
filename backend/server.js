@@ -272,24 +272,51 @@ app.put('/api/posts/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Ruta para subir y procesar imagen a estilo pixel art retro
+// Ruta para subir y procesar imagen a estilo pixel art retro Y SUBIRLA A CLOUDINARY
 app.post('/api/upload-image', upload.single('image'), async (req, res) => {
   try {
     const file = req.file;
     if (!file) return res.status(400).json({ error: 'No se subió ninguna imagen' });
-    const outputFilename = `retro_${Date.now()}.png`;
-    const outputPath = path.join(uploadsDir, outputFilename);
+
+    // Define a temporary path for the processed image within the multer temp directory
+    const processedTempFilename = `processed_temp_${Date.now()}.png`;
+    const processedTempPath = path.join(file.destination, processedTempFilename); // Use multer's temp destination
+
     // Procesar imagen: reducir tamaño y colores para efecto pixel art
     await sharp(file.path)
-      .resize(250, 250, { fit: 'inside' }) // tamaño aumentado a 250x250
-      .png({ colors: 10 }) // paleta limitada
-      .toFile(outputPath);
-    // Eliminar archivo temporal
-    fs.unlinkSync(file.path);
-    // Devolver la URL de la imagen procesada
-    res.json({ url: `/uploads/${outputFilename}` });
+      .resize(250, 250, { fit: 'inside' })
+      .png({ colors: 10 })
+      .toFile(processedTempPath); // Save processed image to a temporary file
+
+    // Sube la imagen PROCESADA a Cloudinary
+    const result = await cloudinary.uploader.upload(processedTempPath, {
+      folder: 'blog_pixelated', // Carpeta en Cloudinary para imágenes pixeladas
+      resource_type: 'image',
+    });
+
+    // Eliminar archivo temporal original de multer
+    fs.unlink(file.path, (err) => {
+      if (err) console.error('Error deleting original temp file:', file.path, err);
+    });
+    // Eliminar archivo temporal procesado
+    fs.unlink(processedTempPath, (err) => {
+      if (err) console.error('Error deleting processed temp file:', processedTempPath, err);
+    });
+
+    // Devolver la URL segura de Cloudinary de la imagen PROCESADA
+    res.json({ url: result.secure_url });
+
   } catch (err) {
-    res.status(500).json({ error: 'Error procesando la imagen', details: err.message });
+    console.error('Error processing and uploading image to Cloudinary:', err);
+    // Intentar eliminar archivos temporales incluso si hay un error
+    if (req.file && req.file.path) {
+      fs.unlink(req.file.path, (unlinkErr) => {
+        if (unlinkErr) console.error('Error deleting original temp file on error:', req.file.path, unlinkErr);
+      });
+    }
+    // No tenemos processedTempPath aquí de forma segura si toFile falló,
+    // pero si existe y toFile tuvo éxito pero Cloudinary falló, se intentará borrar arriba.
+    res.status(500).json({ error: 'Error procesando y subiendo la imagen a Cloudinary', details: err.message });
   }
 });
 

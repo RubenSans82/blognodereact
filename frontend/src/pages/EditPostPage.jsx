@@ -94,7 +94,7 @@ function EditPostPage() {
         <div style={{ marginBottom: '1rem' }}>
           <label>Imagen actual:</label><br />
           {imageUrl ? (
-            <img src={imageUrl.startsWith('http') ? imageUrl : `https://apiblog-n914.onrender.com${imageUrl}`} alt="Imagen del post" style={{ maxWidth: '100%', maxHeight: 200 }} />
+            <img src={imageUrl} alt="Imagen del post" style={{ maxWidth: '100%', maxHeight: 200 }} />
           ) : (
             <span>No hay imagen</span>
           )}
