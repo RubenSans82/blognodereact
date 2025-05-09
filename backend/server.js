@@ -341,9 +341,6 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
   }
 });
 
-// Servir archivos estáticos de uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 // --- Iniciar Servidor ---
 async function startServer() {
   try {
