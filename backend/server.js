@@ -1,4 +1,7 @@
 require('dotenv').config(); // Cargar variables de entorno desde .env
+console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME);
+console.log('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY);
+// No mostraremos el API Secret en los logs por seguridad, pero verifica que esté configurado.
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
