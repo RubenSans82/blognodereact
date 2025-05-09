@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import CreatePostPage from './pages/CreatePostPage.jsx';
 import EditPostPage from './pages/EditPostPage.jsx';
+import LandingPage from './pages/LandingPage.jsx'; // Importar LandingPage
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         {/* Usar App como layout que contiene el Navbar y el Outlet para las páginas */}
         <Route path="/" element={<App />}>
           {/* Rutas anidadas que se renderizarán dentro del Outlet de App */}
-          <Route index element={<HomePage />} /> {/* Ruta raíz */}
+          <Route index element={<LandingPage />} /> {/* Ruta raíz ahora es LandingPage */}
+          <Route path="home" element={<HomePage />} /> {/* Antigua HomePage ahora en /home */}
+          <Route path="landing" element={<LandingPage />} /> {/* Ruta explícita para /landing */}
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="create" element={<CreatePostPage />} /> {/* Ruta para crear post */}

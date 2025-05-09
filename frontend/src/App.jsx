@@ -44,7 +44,7 @@ function App() {
   }, [navigate]);
 
   useEffect(() => {
-    if (location.pathname === '/login') {
+    if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/landing') {
       document.body.classList.add('login-bg');
       document.body.classList.remove('main-bg');
     } else {
