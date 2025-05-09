@@ -4,7 +4,7 @@ import Typewriter from '../components/Typewriter'; // Importamos el componente T
 
 function LandingPage() {
   const navigate = useNavigate(); // Hook para la navegación
-  const welcomeText = "Bienvenido a Retro Post. Crea, comparte y revive la nostalgia.";
+  const welcomeText = "Iniciando conexión con el servidor... Parece que nuestro Amstrad CPC 464 está calentando los circuitos. Como funciona con energía retro y un poco de magia, a veces tarda un poquito en despertar después de una siesta (cortesía del plan gratuito). ¡Ten paciencia, la nostalgia digital está en camino!";
 
   return (
     // Contenedor principal: similar a LoginPage para mantener la estética
@@ -28,16 +28,12 @@ function LandingPage() {
           color: '#fff',
           textShadow: '1px 1px 3px #000',
           lineHeight: '1.6',
-          minHeight: '100px' // Para evitar saltos de layout mientras escribe
+          maxWidth: '220px', // Se aplicará al div contenedor en Typewriter
+          margin: '0 auto 2rem auto', // Se aplicará al div contenedor en Typewriter
+          textAlign: 'left', // Se aplicará al <p> interno en Typewriter
         }}
+        maxLines={10} // Nueva propiedad para limitar las líneas visibles
       />
-      {/* Podrías añadir un botón o enlace aquí si lo deseas, por ejemplo: */}
-      <button 
-        onClick={() => navigate('/login')} 
-        style={{ marginTop: '2rem', padding: '10px 20px', fontSize: '1em', cursor: 'pointer', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', textShadow: '1px 1px 2px #000' }}
-      >
-        Comenzar
-      </button>
     </div>
   );
 }
