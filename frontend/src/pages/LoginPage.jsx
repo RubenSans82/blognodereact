@@ -22,17 +22,13 @@ function LoginPage() {
       // El token y userId deberían estar en 'data' directamente.
       if (data && data.token && data.userId) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('username', username); // El backend podría devolver el username también
-        localStorage.setItem('userId', data.userId.toString());
-        localStorage.setItem('justLoggedIn', '1');
-        console.log('Login exitoso, token, username y userId guardados.');
-        
-        window.dispatchEvent(new Event('login-success-animation'));
-        
+        localStorage.setItem('username', data.username); // Guardar el nombre de usuario
+        window.dispatchEvent(new CustomEvent('login-success-animation'));
+        window.dispatchEvent(new Event('storage')); // Notificar a Navbar
+        // Esperar a que la animación de TV termine antes de navegar
         setTimeout(() => {
-            navigate('/');
-        }, 100);
-
+          navigate('/home'); // MODIFICADO: Redirigir a /home después del login
+        }, 2700); // Ajusta este tiempo si es necesario
       } else {
         // Si falta token o userId en la respuesta (aunque apiClient debería haber lanzado un error si la respuesta no fue ok)
         throw new Error(data.message || 'Respuesta de login incompleta del servidor.');
