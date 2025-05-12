@@ -91,9 +91,7 @@ function Navbar() {
     }, 2700); // Ajusta este tiempo si es necesario
   };
 
-  // Determinar a dónde debe enlazar el logo
   const logoLinkTo = isLoggedIn && !isPublicPage ? '/home' : '/';
-  // Determinar si se deben aplicar los estilos de menú para "logged-in"
   const shouldApplyLoggedInMenuClass = isLoggedIn && !isPublicPage;
 
   return (
@@ -106,55 +104,74 @@ function Navbar() {
         </span>
       </button>
       <ul className={`navbar-menu${menuOpen ? ' open' : ''}${shouldApplyLoggedInMenuClass ? ' logged-in' : ''}`}>
-        <li className="navbar-menu-spacer"></li>
-        {/* Logo siempre visible, enlace dinámico */}
         <li className="navbar-logo-li">
           <Link to={logoLinkTo} className="navbar-logo">
             <img src={logo} className="logo" alt="Blog logo" />
           </Link>
         </li>
 
-        {/* Ítems para usuarios logueados y en páginas no públicas (para la barra principal) */}
-        {isLoggedIn && !isPublicPage && (
-          <>
-            <li className="nav-item">
-              <Link to="/home" className="nav-links">Inicio</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/create" className="nav-links">Crear Post</Link>
-            </li>
-            <li className="nav-item username-desktop">
-              <span className="nav-links username">Bienvenido, {username}</span>
-            </li>
-            <li className="nav-item navbar-logout-desktop">
-              <button onClick={handleLogout} className="nav-links nav-button">Logout</button>
-            </li>
-          </>
+        {/* Contenedor para los links de la derecha (Desktop) */}
+        {!menuOpen && ( // Solo mostrar en desktop si el menú no está abierto
+          <div className="navbar-links-desktop">
+            {isLoggedIn && !isPublicPage && (
+              <>
+                <li className="nav-item">
+                  <Link to="/home" className="nav-links">Inicio</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/create" className="nav-links">Crear Post</Link>
+                </li>
+                <li className="nav-item username-desktop">
+                  <span className="nav-links username">Bienvenido, {username}</span>
+                </li>
+                <li className="nav-item navbar-logout-desktop">
+                  <button onClick={handleLogout} className="nav-links nav-button">Logout</button>
+                </li>
+              </>
+            )}
+            {!isLoggedIn && (
+              <>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-links">Login</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/register" className="nav-links">Registro</Link>
+                </li>
+              </>
+            )}
+          </div>
         )}
 
-        {/* Ítems para usuarios no logueados (para la barra principal) */}
-        {!isLoggedIn && (
-          <>
-            <li className="nav-item">
-              <Link to="/login" className="nav-links">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/register" className="nav-links">Registro</Link>
-            </li>
-          </>
-        )}
-
-         {/* Username y Logout para el MENÚ HAMBURGUESA ABIERTO */}
-         {/* Estos se mostrarán solo si está logueado Y el menú está abierto */}
-         {isLoggedIn && menuOpen && (
-          <>
-            <li className="nav-item username-mobile">
-              <span className="nav-links username">Bienvenido, {username}</span>
-            </li>
-            <li className="nav-item navbar-logout-mobile">
-              <button onClick={handleLogout} className="nav-links nav-button">Logout</button>
-            </li>
-          </>
+        {/* Items para el MENÚ HAMBURGUESA ABIERTO (Mobile) */}
+        {menuOpen && (
+          <div className="navbar-links-mobile">
+            {isLoggedIn && ( // Items para logueados en menú hamburguesa
+              <>
+                <li className="nav-item">
+                  <Link to="/home" className="nav-links">Inicio</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/create" className="nav-links">Crear Post</Link>
+                </li>
+                <li className="nav-item username-mobile">
+                  <span className="nav-links username">Bienvenido, {username}</span>
+                </li>
+                <li className="nav-item navbar-logout-mobile">
+                  <button onClick={handleLogout} className="nav-links nav-button">Logout</button>
+                </li>
+              </>
+            )}
+            {!isLoggedIn && ( // Items para no logueados en menú hamburguesa
+              <>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-links">Login</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/register" className="nav-links">Registro</Link>
+                </li>
+              </>
+            )}
+          </div>
         )}
       </ul>
     </nav>

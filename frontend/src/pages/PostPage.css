@@ -1,0 +1,91 @@
+/* Estilos para la navegación entre posts en PostPage.jsx */
+.post-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-color, #ccc); /* Usar variable de tema o fallback */
+}
+
+.nav-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-basis: 120px; /* Un poco más de espacio para títulos más largos */
+  text-align: center; /* Centrar el texto del título del post */
+}
+
+/* Estilo general para los botones de navegación (links) */
+.nav-button-container a,
+.nav-button-container .nav-button /* Aplicar también a la clase .nav-button si se usa directamente en Link */
+{
+  display: inline-block;
+  text-decoration: none;
+  color: var(--primary-color); /* Color de texto primario del tema retro */
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--primary-color); /* Borde con color primario del tema retro */
+  background-color: var(--surface-color); /* Fondo con color de superficie del tema retro */
+  box-shadow: 3px 3px 0px var(--primary-hover-color); /* Sombra con color primario hover del tema retro */
+  transition: all 0.1s ease-out;
+  font-family: 'Press Start 2P', cursive, sans-serif; /* Fuente pixelada */
+  font-size: 0.85rem; /* Ajustado para que quepa mejor "Anterior" y "Siguiente" */
+  text-align: center;
+  min-width: 90px; /* Ajustado */
+  line-height: 1.2; /* Para mejor espaciado vertical del texto del botón */
+}
+
+.nav-button-container a:hover,
+.nav-button-container .nav-button:hover {
+  background-color: var(--primary-color); /* Fondo con color primario al pasar el ratón */
+  color: var(--background-color); /* Texto con color de fondo del tema retro (para contraste) */
+  border-color: var(--primary-color);
+  box-shadow: 1px 1px 0px var(--primary-hover-color);
+  transform: translate(2px, 2px);
+}
+
+.nav-button-container a:active,
+.nav-button-container .nav-button:active {
+  background-color: var(--primary-hover-color); /* Fondo con color primario hover al hacer clic */
+  color: var(--background-color); /* Texto con color de fondo del tema retro */
+  border-color: var(--primary-hover-color);
+  box-shadow: 0px 0px 0px var(--primary-hover-color);
+  transform: translate(3px, 3px);
+}
+
+/* Estilo para el texto del título del post debajo del botón */
+.nav-button-container span {
+  margin-top: 0.75rem;
+  font-size: 0.75rem; /* Ligeramente más pequeño */
+  color: var(--text-muted); /* Color de texto atenuado del tema retro */
+  font-family: 'Share Tech Mono', monospace; /* Fuente consistente con el tema */
+  display: block; /* Asegurar que ocupe su propia línea */
+  max-width: 120px; /* Evitar que títulos muy largos rompan el layout */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Para que ellipsis funcione */
+}
+
+/* Placeholder para cuando no hay botón, para mantener la alineación */
+.nav-button-placeholder {
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  min-width: 90px;
+  height: calc(0.85rem * 1.2 + 0.75rem * 2 + 4px); /* Aproximar altura del botón: font-size * line-height + padding-top-bottom + border-top-bottom */
+  visibility: hidden; /* Ocupa espacio pero no es visible */
+}
+
+/* Ocultar el contenedor si no hay botón (por ejemplo, si no hay post anterior/siguiente) */
+.nav-button-container.hidden {
+  visibility: hidden;
+}
+
+/* Si quieres diferenciar los botones de "anterior" y "siguiente" específicamente,
+   puedes usar estas clases, aunque el estilo general de 'a' ya los cubre.
+   Por ejemplo, para cambiar el contenido o algún detalle menor. */
+.prev-post-link {}
+.next-post-link {}
+
+/* Asegúrate de que la fuente 'Press Start 2P' esté importada en tu proyecto,
+   generalmente en index.css o App.css. Por ejemplo:
+   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*/

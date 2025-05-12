@@ -7,6 +7,8 @@
   --default-background-color: #121212; /* Un fondo oscuro genérico */
   --default-text-color: #e0e0e0; /* Un texto claro genérico */
   --default-primary-color: #6200ee; /* Un primario genérico */
+  --navbar-height-default: 60px; /* Altura de la navbar para el padding del contenido */
+  --navbar-height-retro: 60px; /* Puede ser diferente si el estilo retro cambia la altura */
 
   font-family: 'Share Tech Mono', monospace; /* Fuente base global */
   line-height: 1.6;
@@ -29,7 +31,200 @@
   box-sizing: border-box;
 }
 
-/* Estilos para body.retro-active y sus descendientes */
+/* Navbar Container Styles (aplican siempre, ajustados para fixed y flex) */
+.navbar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--navbar-height-default); /* Usar variable para la altura */
+  z-index: 1000;
+  background-color: var(--default-background-color); /* Color de fondo base */
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Espacio entre hamburguesa/logo y links */
+  padding: 0 1rem; /* Padding horizontal */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra por defecto */
+}
+
+/* Estilos para el menú (ul) */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 100%; /* Ocupar altura del navbar-container */
+}
+
+/* Cuando el menú NO está abierto (desktop/tablet) */
+.navbar-menu:not(.open) {
+  justify-content: flex-end; /* Alinea los links a la derecha por defecto */
+  flex-grow: 1; /* Permite que ocupe el espacio restante */
+}
+
+.navbar-logo-li {
+  margin-right: auto; /* Empuja el logo a la izquierda y los demás items a la derecha */
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  display: inline-flex; /* Para alinear bien la imagen */
+  align-items: center;
+  padding: 0; /* Quitar padding extra si lo tenía */
+}
+
+.navbar-logo img.logo {
+  height: 2.5em; /* Ajustar según el tamaño deseado del logo */
+  max-height: calc(var(--navbar-height-default) - 20px); /* Limitar altura del logo */
+  padding: 0;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 0.5em #aaa); /* Sombra suave por defecto para el logo */
+  transition: filter 0.25s;
+}
+.navbar-logo img.logo:hover {
+   filter: drop-shadow(0 0 0.75em var(--default-primary-color));
+}
+
+/* Contenedor de links para desktop */
+.navbar-links-desktop {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre links de desktop */
+}
+
+/* Items de navegación generales (li) */
+.nav-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Enlaces de navegación y botones (estado no logueado y base) */
+.nav-links,
+.nav-button {
+  color: var(--default-text-color);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px; /* Altura fija para mejor alineación */
+  line-height: 1; /* Para centrar texto en la altura fija */
+}
+
+.nav-links:hover,
+.nav-button:hover {
+  color: var(--default-primary-color);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-button {
+  background: none;
+  border: 1px solid transparent; /* Borde sutil o quitar si se prefiere */
+  cursor: pointer;
+  font-size: 1em; /* Heredar tamaño de fuente */
+  font-family: inherit;
+}
+.nav-button:hover {
+  border-color: var(--default-primary-color);
+}
+
+/* Botón Hamburguesa */
+.navbar-hamburger {
+  display: none; /* Oculto en desktop por defecto */
+  background: transparent;
+  border: none;
+  color: var(--default-text-color);
+  font-size: 1.8rem; /* Tamaño del icono hamburguesa */
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001; /* Encima del menú cuando está cerrado */
+}
+
+.pixel-hamburger {
+  /* ... (estilos existentes del pixel-hamburger) ... */
+}
+
+/* Menú Abierto (Móvil) */
+.navbar-menu.open {
+  position: absolute;
+  top: 0; /* Alineado con el top del navbar-container */
+  left: 0;
+  width: 100%;
+  min-height: 100vh; /* Ocupar toda la altura de la pantalla */
+  background-color: var(--default-background-color); /* Fondo para el menú abierto */
+  flex-direction: column;
+  align-items: center; /* Centrar items */
+  justify-content: flex-start; /* Alinea items al inicio */
+  padding-top: calc(var(--navbar-height-default) + 1rem); /* Espacio para el logo/hamburguesa y un poco más */
+  gap: 1rem; /* Espacio entre items del menú móvil */
+  /* Transición para abrir/cerrar podría añadirse aquí */
+}
+
+.navbar-menu.open .navbar-logo-li {
+  margin-right: 0; /* No necesita empujar en móvil */
+  margin-bottom: 1rem; /* Espacio debajo del logo en menú abierto */
+}
+
+.navbar-menu.open .navbar-links-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.navbar-menu.open .nav-item {
+  width: 80%;
+  max-width: 300px;
+}
+
+.navbar-menu.open .nav-links,
+.navbar-menu.open .nav-button {
+  width: 100%; /* Ocupar todo el ancho del .nav-item */
+  justify-content: center;
+  font-size: 1.2em;
+  padding: 0.8rem 1rem;
+}
+
+/* Media query para mostrar hamburguesa y ocultar links de desktop en pantallas pequeñas */
+@media (max-width: 768px) {
+  .navbar-hamburger {
+    display: block;
+  }
+  .navbar-links-desktop {
+    display: none;
+  }
+  .navbar-menu:not(.open) .navbar-logo-li {
+    /* En móvil, cuando el menú está cerrado, el logo puede estar centrado o solo el hamburguesa visible */
+    /* Esto depende de si el logo se muestra junto a la hamburguesa o solo dentro del menú abierto */
+    /* Por ahora, se asume que el logo es visible junto a la hamburguesa */
+     margin-right: 0; /* Si la hamburguesa está a la izquierda y el logo a la derecha del espacio restante */
+  }
+  .navbar-container {
+     justify-content: space-between; /* Hamburguesa a un lado, logo al otro si es visible */
+  }
+  .navbar-menu:not(.open) {
+    /* Cuando el menú está cerrado en móvil, solo el logo (si se decide mostrar) y la hamburguesa son relevantes */
+    /* El ul en sí podría estar oculto o solo contener el logo si la hamburguesa está fuera */
+    /* Dado que la hamburguesa está fuera del ul, el ul puede no mostrarse hasta que se abra */
+    /* O, si el logo está en el ul, el ul necesita display flex para mostrar solo el logo */
+    display: none; /* Ocultar el menú de links desktop por completo */
+  }
+  .navbar-menu.open {
+     display: flex; /* Asegurar que se muestre cuando está abierto */
+  }
+  /* Si el logo debe estar siempre visible a la izquierda de la hamburguesa: */
+  /* .navbar-container { justify-content: flex-start; gap: 1rem; } */
+  /* .navbar-hamburger { order: 2; } */
+  /* .navbar-menu (con el logo) { order: 1; } */
+}
+
+/* --- ESTILOS PARA MODO RETRO --- */
 body.retro-active {
   --background-color: #0d0221;
   --surface-color: #1a0f35;
@@ -180,10 +375,13 @@ body.retro-active .button-delete:hover {
   box-shadow: none;
 }
 
+body:not(.retro-active) #root {
+  padding-top: var(--navbar-height-default); /* Espacio para la navbar no retro */
+}
 body.retro-active #root {
   max-width: 960px;
   margin: 0 auto;
-  padding: 8rem 2rem 2rem 2rem; /* Aumentado padding-top de 80px a 6rem (96px) */
+  padding: var(--navbar-height-retro) 2rem 2rem 2rem; /* Navbar retro */
   text-align: left;
   width: 100%;
 }

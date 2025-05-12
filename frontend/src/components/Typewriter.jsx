@@ -1,25 +1,36 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Typewriter = ({ text, speed = 150, style, maxLines = null }) => {
+const Typewriter = ({ text, speed = 150, style, maxLines = null, onComplete = null }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const pRef = useRef(null); // Ref para el elemento <p>
   const [textTransform, setTextTransform] = useState('translateY(0px)'); // Estado para la transformación
+  const onCompleteCalledRef = useRef(false); // Ref para asegurar que onComplete se llame solo una vez por texto
 
   useEffect(() => {
     if (!text) {
       setDisplayedText('');
       setCurrentIndex(0);
-      setTextTransform('translateY(0px)'); // Reset transform
+      setTextTransform('translateY(0px)');
+      onCompleteCalledRef.current = false; // Resetear al cambiar el texto
       return;
     }
     setDisplayedText('');
     setCurrentIndex(0);
-    setTextTransform('translateY(0px)'); // Reset transform al cambiar el texto
+    setTextTransform('translateY(0px)');
+    onCompleteCalledRef.current = false; // Resetear al cambiar el texto
   }, [text]);
 
   useEffect(() => {
-    if (!text || currentIndex >= text.length) return;
+    if (!text) return;
+
+    if (currentIndex >= text.length) {
+      if (onComplete && !onCompleteCalledRef.current) {
+        onComplete();
+        onCompleteCalledRef.current = true; // Marcar como llamado
+      }
+      return;
+    }
 
     const timeoutId = setTimeout(() => {
       setDisplayedText((prev) => prev + text[currentIndex]);
@@ -27,7 +38,7 @@ const Typewriter = ({ text, speed = 150, style, maxLines = null }) => {
     }, speed);
 
     return () => clearTimeout(timeoutId);
-  }, [text, currentIndex, speed]);
+  }, [text, currentIndex, speed, onComplete]);
 
   // Efecto para calcular y aplicar el desplazamiento vertical
   useEffect(() => {
